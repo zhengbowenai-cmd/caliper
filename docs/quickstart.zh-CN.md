@@ -1,8 +1,8 @@
+<p align="right"><a href="quickstart.md">English</a> · <b>简体中文</b></p>
+
 # 快速上手
 
 从 0 到一次"带闸门的"真实优化运行，大约 10 分钟。
-
-> English: [quickstart.md](quickstart.md)
 
 ## 0. 安装
 

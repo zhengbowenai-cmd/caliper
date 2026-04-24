@@ -1,3 +1,5 @@
+<p align="right"><b>English</b> · <a href="CONTRIBUTING.zh-CN.md">简体中文</a></p>
+
 # Contributing to Caliper
 
 Thank you for considering a contribution. Caliper's value depends on

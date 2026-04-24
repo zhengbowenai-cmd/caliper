@@ -1,3 +1,5 @@
+<p align="right"><b>English</b> · <a href="algorithms.zh-CN.md">简体中文</a></p>
+
 # Algorithms & References
 
 Every numerical gate in Caliper maps to a peer-reviewed source. When you

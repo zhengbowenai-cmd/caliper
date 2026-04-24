@@ -1,6 +1,6 @@
-# Quickstart
+<p align="right"><b>English</b> · <a href="quickstart.zh-CN.md">简体中文</a></p>
 
-> 中文：[quickstart.zh-CN.md](quickstart.zh-CN.md)
+# Quickstart
 
 From zero to your first gated optimization run in ~10 minutes.
 

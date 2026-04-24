@@ -1,3 +1,5 @@
+<p align="right"><b>English</b> · <a href="architecture.zh-CN.md">简体中文</a></p>
+
 # Caliper Architecture
 
 > This document describes the full V1 architecture. The MVP ships the

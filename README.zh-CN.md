@@ -1,3 +1,5 @@
+<p align="right"><a href="README.md">English</a> · <b>简体中文</b></p>
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
@@ -6,20 +8,23 @@
 </p>
 
 <p align="center">
-  <a href="README.md">English</a>
-  ·
-  <a href="#中文">中文</a>
-  ·
-  <a href="docs/architecture.md">架构</a>
-  ·
-  <a href="docs/algorithms.md">算法</a>
-  ·
-  <a href="docs/quickstart.md">快速上手</a>
+  <a href="https://github.com/OWNER/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/OWNER/caliper/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
+  <a href="https://github.com/OWNER/caliper/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
+  <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-informational?style=flat-square" alt="Python 3.12+"/>
+  <img src="https://img.shields.io/badge/types-pyright-forestgreen?style=flat-square" alt="Pyright"/>
+  <img src="https://img.shields.io/badge/lint-ruff-orange?style=flat-square" alt="Ruff"/>
+</p>
+
+<p align="center">
+  <a href="docs/quickstart.zh-CN.md">快速上手</a> ·
+  <a href="docs/architecture.zh-CN.md">架构</a> ·
+  <a href="docs/algorithms.zh-CN.md">算法</a> ·
+  <a href="CONTRIBUTING.zh-CN.md">贡献</a> ·
+  <a href="CHANGELOG.md">更新日志</a> ·
+  <a href="SECURITY.zh-CN.md">安全</a>
 </p>
 
 ---
-
-<a id="中文"></a>
 
 ## 为什么要有 Caliper？
 
