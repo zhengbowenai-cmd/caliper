@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a problem with Probe — statistics, linter, optimizer, CLI, etc.
+title: "[bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Probe's value depends on
+        mathematical rigor — the more reproducible the report, the faster we can fix it.
+  - type: input
+    id: probe-version
+    attributes:
+      label: Probe version
+      placeholder: "0.1.0 (git hash if from main)"
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.12.8"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "Ubuntu 24.04 / macOS 15 / Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Brief description of the observed behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproducer
+      description: |
+        The smallest SKILL.md / eval JSONL / CLI invocation that reproduces the issue.
+        Redact any API keys.
+      render: bash
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / run-dir artifacts
+      description: Contents of `final.json`, `verdict.json`, or stderr (redacted).
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

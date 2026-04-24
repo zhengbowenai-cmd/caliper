@@ -1,0 +1,11 @@
+# CODEOWNERS — review routing.
+# Every file is owned by the maintainer(s). Replace OWNER with the actual GitHub handle
+# after the repo is pushed.
+
+*                                   @OWNER
+
+# Critical areas request explicit review from statistical owners:
+/src/probe/safety/                  @OWNER
+/src/probe/gradient/                @OWNER
+/src/probe/governance/              @OWNER
+/docs/algorithms.md                 @OWNER
