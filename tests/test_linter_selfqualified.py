@@ -1,4 +1,5 @@
 """Regression: self-qualified absolute rules should NOT be flagged."""
+
 from caliper.proposer import RuleConflictLinter
 
 
@@ -18,8 +19,9 @@ For trivial edits, just output the code.
 """
     findings = RuleConflictLinter().lint(md)
     # Must NOT flag the Always-with-inline-exception
-    assert not any(f.kind == "absolute_checklist_without_carveout" for f in findings), \
+    assert not any(f.kind == "absolute_checklist_without_carveout" for f in findings), (
         f"Self-qualified absolute should NOT fire. Got: {[f.kind for f in findings]}"
+    )
 
 
 def test_unqualified_absolute_still_flagged():
@@ -38,5 +40,6 @@ Always include a verification checklist at the end of every response.
 Write concisely.
 """
     findings = RuleConflictLinter().lint(md)
-    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), \
+    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), (
         f"Unqualified absolute SHOULD fire. Got: {[f.kind for f in findings]}"
+    )

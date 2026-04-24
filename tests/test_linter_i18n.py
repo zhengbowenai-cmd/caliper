@@ -1,4 +1,5 @@
 """Linter Chinese + YAML block-scalar support."""
+
 from caliper.proposer import RuleConflictLinter
 
 
@@ -18,8 +19,9 @@ description: 处理中文任务的技能指南。
 """
     findings = RuleConflictLinter().lint(md)
     # Should detect absolute-checklist-without-carveout in Chinese too
-    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), \
+    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), (
         f"Chinese 必须...验证清单 should fire. Got: {[f.kind for f in findings]}"
+    )
 
 
 def test_chinese_inline_carveout_passes():
@@ -34,8 +36,9 @@ description: 处理中文任务的技能指南。
 """
     findings = RuleConflictLinter().lint(md)
     # Self-qualified with 除非/琐碎 — should NOT fire
-    assert not any(f.kind == "absolute_checklist_without_carveout" for f in findings), \
+    assert not any(f.kind == "absolute_checklist_without_carveout" for f in findings), (
         f"Self-qualified Chinese should NOT fire. Got: {[f.kind for f in findings]}"
+    )
 
 
 def test_yaml_block_scalar_description():

@@ -16,11 +16,12 @@ We track three exhaustable resources:
 Any limit hit → BudgetExceeded with reason, causing the optimizer to
 finalize with current champion (no forced rollback).
 """
+
 from __future__ import annotations
 
 import time
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Iterable
 
 
 class BudgetExceeded(Exception):
@@ -30,11 +31,11 @@ class BudgetExceeded(Exception):
 # Per-million-token rates (CNY). Rough order-of-magnitude; adjust per provider.
 # Conservative defaults so we overestimate rather than surprise.
 _DEFAULT_RATES_CNY_PER_MTOK = {
-    ("qwen", "input"): 8.0,       # qwen-max input
-    ("qwen", "output"): 24.0,     # qwen-max output
+    ("qwen", "input"): 8.0,  # qwen-max input
+    ("qwen", "output"): 24.0,  # qwen-max output
     ("deepseek", "input"): 2.0,
     ("deepseek", "output"): 8.0,
-    ("claude", "input"): 22.0,    # sonnet
+    ("claude", "input"): 22.0,  # sonnet
     ("claude", "output"): 110.0,
     ("gpt", "input"): 18.0,
     ("gpt", "output"): 60.0,
@@ -43,8 +44,9 @@ _DEFAULT_RATES_CNY_PER_MTOK = {
 }
 
 
-def estimate_cost_cny(family: str, prompt_tok: int, completion_tok: int,
-                      rates: dict | None = None) -> float:
+def estimate_cost_cny(
+    family: str, prompt_tok: int, completion_tok: int, rates: dict | None = None
+) -> float:
     r = rates or _DEFAULT_RATES_CNY_PER_MTOK
     fam = family.lower() if family else "unknown"
     in_rate = r.get((fam, "input")) or r[("unknown", "input")]
@@ -65,9 +67,7 @@ class Budget:
     def tick_round(self) -> None:
         self._round_count += 1
         if self.max_rounds is not None and self._round_count > self.max_rounds:
-            raise BudgetExceeded(
-                f"max_rounds {self.max_rounds} exceeded"
-            )
+            raise BudgetExceeded(f"max_rounds {self.max_rounds} exceeded")
 
     def check(self, llm_clients: Iterable) -> None:
         """Raise BudgetExceeded if any limit hit.
@@ -78,18 +78,14 @@ class Budget:
         # wallclock
         elapsed = time.monotonic() - self._start_time
         if self.max_wallclock_s is not None and elapsed > self.max_wallclock_s:
-            raise BudgetExceeded(
-                f"wallclock {elapsed:.0f}s > limit {self.max_wallclock_s}s"
-            )
+            raise BudgetExceeded(f"wallclock {elapsed:.0f}s > limit {self.max_wallclock_s}s")
         # tokens
         total_tokens = sum(
             getattr(c, "total_prompt_tokens", 0) + getattr(c, "total_completion_tokens", 0)
             for c in llm_clients
         )
         if self.max_tokens is not None and total_tokens > self.max_tokens:
-            raise BudgetExceeded(
-                f"tokens {total_tokens:,} > limit {self.max_tokens:,}"
-            )
+            raise BudgetExceeded(f"tokens {total_tokens:,} > limit {self.max_tokens:,}")
         # cost
         if self.max_cost_cny is not None:
             total_cost = 0.0
@@ -128,7 +124,9 @@ class Budget:
             cost_cny_est=round(cost, 3),
             rounds_used=self._round_count,
             limits=dict(
-                wallclock_s=self.max_wallclock_s, tokens=self.max_tokens,
-                cost_cny=self.max_cost_cny, rounds=self.max_rounds,
+                wallclock_s=self.max_wallclock_s,
+                tokens=self.max_tokens,
+                cost_cny=self.max_cost_cny,
+                rounds=self.max_rounds,
             ),
         )

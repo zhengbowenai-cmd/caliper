@@ -32,6 +32,7 @@ use the variance-adaptive schedule:
 clipped to [0, 1/(1-m) - epsilon] and [0, 1/m - epsilon] respectively so
 capitals stay nonnegative.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -44,12 +45,13 @@ from caliper.schemas import CIResult
 @dataclass
 class HedgedCapitalCS:
     """Online CS: feed observations one at a time, read CI any time."""
+
     alpha: float = 0.05
-    grid_size: int = 1001                      # m grid over [0,1]
-    c_max: float = 0.75                        # max betting fraction (<1 for stability)
+    grid_size: int = 1001  # m grid over [0,1]
+    c_max: float = 0.75  # max betting fraction (<1 for stability)
 
     _grid: np.ndarray = field(init=False, repr=False)
-    _log_k_plus: np.ndarray = field(init=False, repr=False)   # log K+_t(m) for each m
+    _log_k_plus: np.ndarray = field(init=False, repr=False)  # log K+_t(m) for each m
     _log_k_minus: np.ndarray = field(init=False, repr=False)
     _running_sum: float = 0.0
     _running_sq: float = 0.0
@@ -72,7 +74,9 @@ class HedgedCapitalCS:
             lam = 0.1
         else:
             var = max(1e-6, self._running_sq / self._n - (self._running_sum / self._n) ** 2)
-            lam = float(np.sqrt(2.0 * np.log(2.0 / self.alpha) / (var * self._n * np.log(1 + self._n))))
+            lam = float(
+                np.sqrt(2.0 * np.log(2.0 / self.alpha) / (var * self._n * np.log(1 + self._n)))
+            )
             lam = min(lam, self.c_max)
 
         # for each candidate m, update log-capitals
@@ -114,8 +118,11 @@ class HedgedCapitalCS:
         if self._n == 0:
             return CIResult(
                 point_estimate=0.5,
-                ci_lower=0.0, ci_upper=1.0,
-                alpha=self.alpha, method="hedged_capital_cs", n=0,
+                ci_lower=0.0,
+                ci_upper=1.0,
+                alpha=self.alpha,
+                method="hedged_capital_cs",
+                n=0,
                 significant_at_zero=False,
             )
 
@@ -135,7 +142,8 @@ class HedgedCapitalCS:
         # We surface raw CI; downstream decides significance vs a champion.
         return CIResult(
             point_estimate=float(mean),
-            ci_lower=lo, ci_upper=hi,
+            ci_lower=lo,
+            ci_upper=hi,
             alpha=self.alpha,
             method="hedged_capital_cs",
             n=self._n,
@@ -165,6 +173,7 @@ class PairedDiffCS:
     The CS for the diff is then [2*u_lo - 1, 2*u_hi - 1], and "diff > 0"
     iff u > 0.5, i.e. CS_u excludes [0, 0.5].
     """
+
     alpha: float = 0.05
     _inner: HedgedCapitalCS = field(init=False, repr=False)
 
@@ -177,7 +186,7 @@ class PairedDiffCS:
         self._inner.update(u)
 
     def update_pairs(self, seeds, challengers) -> None:
-        for s, c in zip(seeds, challengers):
+        for s, c in zip(seeds, challengers, strict=False):
             self.update_pair(float(s), float(c))
 
     def ci_diff(self) -> CIResult:
@@ -187,7 +196,8 @@ class PairedDiffCS:
         point = 2 * ci_u.point_estimate - 1.0
         return CIResult(
             point_estimate=point,
-            ci_lower=lo, ci_upper=hi,
+            ci_lower=lo,
+            ci_upper=hi,
             alpha=self.alpha,
             method="hedged_capital_cs_paired",
             n=ci_u.n,

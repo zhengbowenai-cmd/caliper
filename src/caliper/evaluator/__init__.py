@@ -1,7 +1,7 @@
 from caliper.evaluator.ensemble import (
+    ConservativeReward,
     EnsembleJudge,
     JudgeVerdict,
-    ConservativeReward,
 )
 
-__all__ = ["EnsembleJudge", "JudgeVerdict", "ConservativeReward"]
+__all__ = ["ConservativeReward", "EnsembleJudge", "JudgeVerdict"]

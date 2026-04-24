@@ -10,22 +10,25 @@ oracle applies.
 This is intentionally simple — the point is composability. Each oracle
 is a pure function: (input, response) -> OracleResult.
 """
+
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, Protocol
+from typing import Protocol
 
 
 @dataclass
 class OracleResult:
-    passed: bool | None        # None = "not applicable to this case"
+    passed: bool | None  # None = "not applicable to this case"
     detail: str = ""
-    score: float | None = None   # optional 0-1 for partial credit
+    score: float | None = None  # optional 0-1 for partial credit
 
 
 class OracleCheck(Protocol):
     """Any callable that takes (input, response) and returns OracleResult."""
+
     def __call__(self, input: str, response: str) -> OracleResult: ...
 
 
@@ -35,6 +38,7 @@ class OracleCheck(Protocol):
 @dataclass
 class RegexOracle:
     """Pass iff `response` matches `must_match` AND does not match `must_not_match`."""
+
     must_match: str | None = None
     must_not_match: str | None = None
     flags: int = re.IGNORECASE | re.MULTILINE
@@ -56,6 +60,7 @@ class RegexOracle:
 @dataclass
 class LengthOracle:
     """Pass iff response length (char or word) is within [min, max]."""
+
     min_chars: int = 0
     max_chars: int = 10**9
     label: str = "length"
@@ -63,18 +68,19 @@ class LengthOracle:
     def __call__(self, input: str, response: str) -> OracleResult:
         n = len(response)
         if n < self.min_chars:
-            return OracleResult(passed=False,
-                                detail=f"[{self.label}] {n} < min {self.min_chars}")
+            return OracleResult(passed=False, detail=f"[{self.label}] {n} < min {self.min_chars}")
         if n > self.max_chars:
-            return OracleResult(passed=False,
-                                detail=f"[{self.label}] {n} > max {self.max_chars}")
-        return OracleResult(passed=True,
-                            detail=f"[{self.label}] {n} chars (within [{self.min_chars}, {self.max_chars}])")
+            return OracleResult(passed=False, detail=f"[{self.label}] {n} > max {self.max_chars}")
+        return OracleResult(
+            passed=True,
+            detail=f"[{self.label}] {n} chars (within [{self.min_chars}, {self.max_chars}])",
+        )
 
 
 @dataclass
 class CallableOracle:
     """Wrap an arbitrary (input, response) -> bool | OracleResult callable."""
+
     fn: Callable[[str, str], bool | OracleResult]
     label: str = "custom"
 
@@ -97,6 +103,7 @@ class OracleBattery:
       - If all applicable oracles pass, overall=True.
       - If no oracles applied, overall=None (fallback to LLM judge).
     """
+
     checks: list[OracleCheck]
 
     def run(self, input: str, response: str) -> tuple[OracleResult, list[OracleResult]]:

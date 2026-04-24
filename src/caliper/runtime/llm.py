@@ -4,14 +4,15 @@ Supports any provider with OpenAI-compat API: DashScope (Qwen), DeepSeek,
 OpenAI, OpenRouter, local vLLM, etc. Single abstraction so downstream
 components don't care which family they're calling.
 """
+
 from __future__ import annotations
 
 import logging
 import os
 import random
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 from openai import APIConnectionError, APIError, OpenAI, RateLimitError
 
@@ -33,15 +34,16 @@ class LLMClient:
 
     `family` is used downstream to enforce judge-panel heterogeneity.
     """
-    name: str                              # short label: "qwen-max", "claude-sonnet"
-    family: str                            # "qwen" | "claude" | "deepseek" | "gpt" | ...
-    model_id: str                          # actual model identifier for the API
+
+    name: str  # short label: "qwen-max", "claude-sonnet"
+    family: str  # "qwen" | "claude" | "deepseek" | "gpt" | ...
+    model_id: str  # actual model identifier for the API
     api_key: str
     base_url: str
     default_temperature: float = 0.3
     default_max_tokens: int = 1024
-    max_retries: int = 4                   # total attempts = 1 + max_retries
-    retry_base_delay: float = 1.0          # seconds, exponential
+    max_retries: int = 4  # total attempts = 1 + max_retries
+    retry_base_delay: float = 1.0  # seconds, exponential
     retry_max_delay: float = 30.0
     # running totals; reset externally when needed
     total_prompt_tokens: int = field(default=0, init=False)
@@ -63,8 +65,7 @@ class LLMClient:
         """Send chat completion with retry + token counting. Returns text."""
         assert self._client is not None
         msgs = [
-            m if isinstance(m, dict) else {"role": m.role, "content": m.content}
-            for m in messages
+            m if isinstance(m, dict) else {"role": m.role, "content": m.content} for m in messages
         ]
         temp = self.default_temperature if temperature is None else temperature
         mtk = self.default_max_tokens if max_tokens is None else max_tokens
@@ -73,8 +74,11 @@ class LLMClient:
         for attempt in range(self.max_retries + 1):
             try:
                 r = self._client.chat.completions.create(
-                    model=self.model_id, messages=msgs,
-                    temperature=temp, max_tokens=mtk, **extra,
+                    model=self.model_id,
+                    messages=msgs,
+                    temperature=temp,
+                    max_tokens=mtk,
+                    **extra,
                 )
                 self.total_calls += 1
                 if r.usage:
@@ -87,10 +91,15 @@ class LLMClient:
                     break
                 delay = min(
                     self.retry_max_delay,
-                    self.retry_base_delay * (2 ** attempt) * (1 + 0.1 * random.random()),
+                    self.retry_base_delay * (2**attempt) * (1 + 0.1 * random.random()),
                 )
-                log.warning("LLM %s attempt %d failed: %s — retry in %.1fs",
-                            self.model_id, attempt + 1, type(e).__name__, delay)
+                log.warning(
+                    "LLM %s attempt %d failed: %s — retry in %.1fs",
+                    self.model_id,
+                    attempt + 1,
+                    type(e).__name__,
+                    delay,
+                )
                 time.sleep(delay)
             except APIError as e:
                 # non-retryable 4xx
@@ -101,7 +110,8 @@ class LLMClient:
 
     def usage_snapshot(self) -> dict:
         return dict(
-            model=self.model_id, family=self.family,
+            model=self.model_id,
+            family=self.family,
             calls=self.total_calls,
             prompt_tokens=self.total_prompt_tokens,
             completion_tokens=self.total_completion_tokens,
@@ -110,7 +120,7 @@ class LLMClient:
     # ---------------- factory helpers ----------------
 
     @classmethod
-    def qwen(cls, model_id: str = "qwen3.6-plus", **kw) -> "LLMClient":
+    def qwen(cls, model_id: str = "qwen3.6-plus", **kw) -> LLMClient:
         return cls(
             name=model_id,
             family="qwen",
@@ -124,7 +134,7 @@ class LLMClient:
         )
 
     @classmethod
-    def deepseek(cls, model_id: str = "deepseek-chat", **kw) -> "LLMClient":
+    def deepseek(cls, model_id: str = "deepseek-chat", **kw) -> LLMClient:
         return cls(
             name=model_id,
             family="deepseek",
@@ -135,10 +145,13 @@ class LLMClient:
         )
 
     @classmethod
-    def openai_compat(cls, name: str, family: str, model_id: str,
-                      env_key: str, env_base: str, **kw) -> "LLMClient":
+    def openai_compat(
+        cls, name: str, family: str, model_id: str, env_key: str, env_base: str, **kw
+    ) -> LLMClient:
         return cls(
-            name=name, family=family, model_id=model_id,
+            name=name,
+            family=family,
+            model_id=model_id,
             api_key=os.environ[env_key],
             base_url=os.environ[env_base],
             **kw,

@@ -14,6 +14,7 @@ that number is narrative, not evidence. This module produces proper
 paired BCa CI, Hedges' g (small-sample bias-corrected), and TOST
 equivalence-test p-values.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -27,7 +28,8 @@ from caliper.schemas import CIResult, EffectSize
 @dataclass
 class PairedComparison:
     """Per-example score pairs (seed vs challenger)."""
-    seed: np.ndarray        # shape (n,)
+
+    seed: np.ndarray  # shape (n,)
     challenger: np.ndarray  # shape (n,)
 
     def __post_init__(self):
@@ -191,9 +193,13 @@ def _tost_paired_t(cmp: PairedComparison, *, low: float, high: float, alpha: flo
     if se == 0:
         # deterministic
         equivalent = low <= mean <= high
-        return dict(mean_diff=mean, p_low=0.0 if mean > low else 1.0,
-                    p_high=0.0 if mean < high else 1.0,
-                    equivalent=equivalent, method="tost_paired_deterministic")
+        return dict(
+            mean_diff=mean,
+            p_low=0.0 if mean > low else 1.0,
+            p_high=0.0 if mean < high else 1.0,
+            equivalent=equivalent,
+            method="tost_paired_deterministic",
+        )
 
     # H01: diff <= low  (test from above)
     t_low = (mean - low) / se
@@ -215,8 +221,13 @@ def _tost_paired_t(cmp: PairedComparison, *, low: float, high: float, alpha: flo
 
 
 def _tost_paired_bootstrap(
-    cmp: PairedComparison, *, low: float, high: float,
-    alpha: float, n_resamples: int = 5000, seed: int = 0,
+    cmp: PairedComparison,
+    *,
+    low: float,
+    high: float,
+    alpha: float,
+    n_resamples: int = 5000,
+    seed: int = 0,
 ) -> dict:
     """Distribution-free TOST via percentile bootstrap.
 

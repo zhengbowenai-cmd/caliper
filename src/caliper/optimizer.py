@@ -11,13 +11,14 @@ Gate order (rejection at ANY gate kills the candidate, champion stands):
   4. Confidence Seq — CS lower bound on diff must exceed margin
   5. (Effect size reported as context — not a gate)
 """
+
 from __future__ import annotations
 
 import json
 import logging
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Callable, Iterable
 
 import numpy as np
 
@@ -57,12 +58,14 @@ def load_eval_jsonl(path: str | Path) -> list[EvalCase]:
         if not line.strip():
             continue
         row = json.loads(line)
-        cases.append(EvalCase(
-            id=row["id"],
-            input=row["input"],
-            principle=row.get("principle", ""),
-            rubric=row.get("rubric", ""),
-        ))
+        cases.append(
+            EvalCase(
+                id=row["id"],
+                input=row["input"],
+                principle=row.get("principle", ""),
+                rubric=row.get("rubric", ""),
+            )
+        )
     return cases
 
 
@@ -72,7 +75,7 @@ def load_eval_jsonl(path: str | Path) -> list[EvalCase]:
 @dataclass
 class OptimizerConfig:
     max_rounds: int = 3
-    cs_margin: float = 0.02          # CS lower bound on diff must exceed this
+    cs_margin: float = 0.02  # CS lower bound on diff must exceed this
     bootstrap_n_resamples: int = 5000
     bootstrap_alpha: float = 0.05
     cs_alpha: float = 0.05
@@ -94,7 +97,7 @@ class RoundReport:
     candidate_md: str
     lint_findings: list[LintFinding]
     lint_blocked: bool
-    skill_runs_seed: list[SkillRun]       # champion's runs on same cases
+    skill_runs_seed: list[SkillRun]  # champion's runs on same cases
     skill_runs_candidate: list[SkillRun]
     seed_scores: list[float]
     candidate_scores: list[float]
@@ -107,8 +110,7 @@ class RoundReport:
         return {
             "round": self.round_num,
             "lint_blocked": self.lint_blocked,
-            "lint_high": sum(1 for f in self.lint_findings
-                             if f.severity == Severity.HIGH),
+            "lint_high": sum(1 for f in self.lint_findings if f.severity == Severity.HIGH),
             "seed_mean": float(np.mean(self.seed_scores)) if self.seed_scores else None,
             "cand_mean": float(np.mean(self.candidate_scores)) if self.candidate_scores else None,
             "ci": self.bootstrap_ci.model_dump() if self.bootstrap_ci else None,
@@ -132,7 +134,7 @@ class OptimizerResult:
 
 @dataclass
 class Optimizer:
-    target_lm: LLMClient                   # the LLM being instructed
+    target_lm: LLMClient  # the LLM being instructed
     judges: EnsembleJudge
     rewriter: NaiveRewriter
     linter: RuleConflictLinter = field(default_factory=RuleConflictLinter)
@@ -186,9 +188,13 @@ class Optimizer:
             log.info(msg)
 
         if resumed_from_round >= 0:
-            log_(f"[caliper] RESUMING from run_dir (last round {resumed_from_round}); "
-                 f"champion promoted to seed.")
-        log_(f"[caliper] starting run with {len(eval_cases)} eval cases, max_rounds={self.config.max_rounds}")
+            log_(
+                f"[caliper] RESUMING from run_dir (last round {resumed_from_round}); "
+                f"champion promoted to seed."
+            )
+        log_(
+            f"[caliper] starting run with {len(eval_cases)} eval cases, max_rounds={self.config.max_rounds}"
+        )
         log_(f"[caliper] budget limits = {self._budget.snapshot(self._all_llms())['limits']}")
 
         # evaluate seed once (champion baseline)
@@ -219,16 +225,16 @@ class Optimizer:
                 break
 
             snap = self._budget.snapshot(self._all_llms())
-            log_(f"[caliper] ─── round {i} ─── "
-                 f"elapsed={snap['wallclock_s']}s tokens={snap['tokens']:,} "
-                 f"cost=¥{snap['cost_cny_est']:.2f}")
+            log_(
+                f"[caliper] ─── round {i} ─── "
+                f"elapsed={snap['wallclock_s']}s tokens={snap['tokens']:,} "
+                f"cost=¥{snap['cost_cny_est']:.2f}"
+            )
 
             # ---- propose ----
             judge_critiques = self._collect_low_score_critiques(champion_runs)
             prelint = self.linter.lint(champion_md)  # feed champion's issues too
-            candidate_md = self.rewriter.propose(
-                champion_md, prelint, judge_critiques
-            )
+            candidate_md = self.rewriter.propose(champion_md, prelint, judge_critiques)
             rd.write_text(rd.candidate_path(i), candidate_md)
 
             # ---- gate 1: lint ----
@@ -237,8 +243,10 @@ class Optimizer:
             lint_blocked = self.linter.has_blocking_findings(findings)
 
             if lint_blocked:
-                log_(f"[caliper] round {i}: LINTER BLOCKED "
-                     f"({sum(1 for f in findings if f.severity == Severity.HIGH)} HIGH findings)")
+                log_(
+                    f"[caliper] round {i}: LINTER BLOCKED "
+                    f"({sum(1 for f in findings if f.severity == Severity.HIGH)} HIGH findings)"
+                )
                 report = RoundReport(
                     round_num=i,
                     candidate_md=candidate_md,
@@ -265,8 +273,10 @@ class Optimizer:
             log_(f"[caliper] round {i}: evaluating candidate on {len(eval_cases)} cases...")
             cand_runs = self._eval_skill(candidate_md, eval_cases)
             cand_scores = [self._run_score(r) for r in cand_runs]
-            log_(f"[caliper] round {i}: candidate mean = {np.mean(cand_scores):.3f}, "
-                 f"champion mean = {np.mean(champion_scores):.3f}")
+            log_(
+                f"[caliper] round {i}: candidate mean = {np.mean(cand_scores):.3f}, "
+                f"champion mean = {np.mean(champion_scores):.3f}"
+            )
 
             rd.write_skill_runs(i, cand_runs)
 
@@ -282,8 +292,10 @@ class Optimizer:
             # update dual ascent (pulls lambda up if candidates keep overrunning)
             self._lagrangian.update(len(body))
             if length_penalty > 0:
-                log_(f"[caliper] round {i}: body {len(body)} chars, "
-                     f"lagrangian penalty={length_penalty:.4f}")
+                log_(
+                    f"[caliper] round {i}: body {len(body)} chars, "
+                    f"lagrangian penalty={length_penalty:.4f}"
+                )
 
             # ---- gate 3 & 4: bootstrap + CS ----
             cmp_ = PairedComparison(
@@ -333,6 +345,7 @@ class Optimizer:
 
         # ---- final ----
         from caliper.persistence import _stable_hash  # type: ignore
+
         final = OptimizerResult(
             champion_md=champion_md,
             champion_hash=_stable_hash(champion_md),
@@ -347,25 +360,33 @@ class Optimizer:
                 evidence={"rounds_run": len(reports)},
             ),
         )
-        rd.write_json(rd.final_path, {
-            "champion_hash": final.champion_hash,
-            "champion_replaced": champion_md != seed_md,
-            "rounds": [r.summary() for r in reports],
-            "budget": self._budget.snapshot(self._all_llms()),
-            "llm_usage": {
-                "target": self.target_lm.usage_snapshot(),
-                "judges": self.judges.usage_summary(),
+        rd.write_json(
+            rd.final_path,
+            {
+                "champion_hash": final.champion_hash,
+                "champion_replaced": champion_md != seed_md,
+                "rounds": [r.summary() for r in reports],
+                "budget": self._budget.snapshot(self._all_llms()),
+                "llm_usage": {
+                    "target": self.target_lm.usage_snapshot(),
+                    "judges": self.judges.usage_summary(),
+                },
+                "cache_hit_size": len(self.judges._cache),
             },
-            "cache_hit_size": len(self.judges._cache),
-        })
-        log_(f"[caliper] done. champion hash = {final.champion_hash}, "
-             f"replaced = {champion_md != seed_md}")
+        )
+        log_(
+            f"[caliper] done. champion hash = {final.champion_hash}, "
+            f"replaced = {champion_md != seed_md}"
+        )
         return final
 
     # ---- gates ----
 
     def _decide(
-        self, ci: CIResult, cs_ci: CIResult, es: EffectSize,
+        self,
+        ci: CIResult,
+        cs_ci: CIResult,
+        es: EffectSize,
     ) -> tuple[bool, str, dict]:
         """Accept ⇔ BCa CI excludes 0 AND CS lower bound > margin."""
         evidence = dict(
@@ -374,25 +395,39 @@ class Optimizer:
             hedges_g=es.hedges_g,
         )
         if not ci.significant_at_zero or ci.ci_lower <= 0:
-            return False, f"BCa CI does not exclude 0: [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}]", evidence
+            return (
+                False,
+                f"BCa CI does not exclude 0: [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}]",
+                evidence,
+            )
         if cs_ci.ci_lower <= self.config.cs_margin:
-            return False, f"CS lower bound {cs_ci.ci_lower:+.3f} ≤ margin {self.config.cs_margin}", evidence
-        return True, (
-            f"BCa CI [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}] & "
-            f"CS lower {cs_ci.ci_lower:+.3f} > margin {self.config.cs_margin}"
-        ), evidence
+            return (
+                False,
+                f"CS lower bound {cs_ci.ci_lower:+.3f} ≤ margin {self.config.cs_margin}",
+                evidence,
+            )
+        return (
+            True,
+            (
+                f"BCa CI [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}] & "
+                f"CS lower {cs_ci.ci_lower:+.3f} > margin {self.config.cs_margin}"
+            ),
+            evidence,
+        )
 
     # ---- eval loop ----
 
-    def _eval_skill(
-        self, skill_md: str, eval_cases: list[EvalCase]
-    ) -> list[SkillRun]:
+    def _eval_skill(self, skill_md: str, eval_cases: list[EvalCase]) -> list[SkillRun]:
         runs: list[SkillRun] = []
         for case in eval_cases:
-            response = self.target_lm.chat([
-                ChatMessage(role="system", content=skill_md),
-                ChatMessage(role="user", content=case.input),
-            ], temperature=0.3, max_tokens=1024)
+            response = self.target_lm.chat(
+                [
+                    ChatMessage(role="system", content=skill_md),
+                    ChatMessage(role="user", content=case.input),
+                ],
+                temperature=0.3,
+                max_tokens=1024,
+            )
 
             verdict: JudgeVerdict = self.judges.score(
                 input=case.input,
@@ -402,11 +437,14 @@ class Optimizer:
             )
 
             run = make_skill_run(
-                input_text=case.input, response=response, skill_md=skill_md,
+                input_text=case.input,
+                response=response,
+                skill_md=skill_md,
                 id_seed=case.id,
             )
             # fold judge votes into SkillRun
             from caliper.schemas import JudgeScore
+
             run.judges = [
                 JudgeScore(
                     model_family=v.model_family,

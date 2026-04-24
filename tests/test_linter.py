@@ -1,6 +1,6 @@
 """Tests for proposer.linter — the POC H04 guard."""
+
 from caliper.proposer import RuleConflictLinter
-from caliper.proposer.linter import Severity
 
 
 def test_catches_poc2_h04_pattern():
@@ -21,8 +21,9 @@ description: Guidelines for careful coding with a trivial exception for simple t
 """
     linter = RuleConflictLinter()
     findings = linter.lint(bad_md)
-    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), \
+    assert any(f.kind == "absolute_checklist_without_carveout" for f in findings), (
         f"Expected POC H04 pattern to fire. Got: {[f.kind for f in findings]}"
+    )
     assert linter.has_blocking_findings(findings)
 
 

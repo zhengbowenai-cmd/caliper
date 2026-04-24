@@ -1,7 +1,9 @@
 """Tests for governance.budget."""
+
 import time
 
 import pytest
+
 from caliper.governance.budget import Budget, BudgetExceeded, estimate_cost_cny
 
 

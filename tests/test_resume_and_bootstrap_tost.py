@@ -1,11 +1,11 @@
 """Optimizer resume + bootstrap TOST tests."""
+
 from pathlib import Path
 
 import numpy as np
-import pytest
 
-from caliper.safety.bootstrap import PairedComparison, tost_paired
 from caliper.persistence import RunDir
+from caliper.safety.bootstrap import PairedComparison, tost_paired
 
 
 def test_bootstrap_tost_equivalent():
@@ -34,7 +34,9 @@ def test_resume_loads_champion_as_seed(tmp_path: Path):
     rd = RunDir(tmp_path / "run1")
     rd.write_text(rd.seed_path, "---\nname: orig\ndescription: original seed.\n---\nbody1")
     # simulate a prior successful round
-    rd.write_text(rd.champion_path, "---\nname: evolved\ndescription: evolved champion.\n---\nbody2")
+    rd.write_text(
+        rd.champion_path, "---\nname: evolved\ndescription: evolved champion.\n---\nbody2"
+    )
     rd.round_dir(0)  # make round 0 dir exist
 
     # Use RunDir's list_rounds to confirm (no live LLM needed)

@@ -10,6 +10,7 @@ Shows how every Caliper module would have changed the POC-2 conclusion:
 Run with:
     cd caliper && uv run python examples/karpathy-v2/demo.py
 """
+
 from __future__ import annotations
 
 import json
@@ -44,6 +45,7 @@ def section(title: str) -> None:
 # ---------------------------------------------------------------------------
 # 1. Re-examine the +17% claim with BCa bootstrap + Hedges' g + TOST
 # ---------------------------------------------------------------------------
+
 
 def check_statistical_validity():
     section("1. Statistical re-examination of the '+17%' claim")
@@ -82,18 +84,19 @@ def check_statistical_validity():
     print("\n  -- Required n for 80% power at d=0.3 (conservative) --")
     n_needed = required_n_paired_t(0.3, alpha=0.05, power=0.80)
     print(f"  ≈ {n_needed} paired samples to detect d=0.3 at 80% power")
-    print(f"  (POC had n=8 → power to detect d=0.3 was ~15%)")
+    print("  (POC had n=8 → power to detect d=0.3 was ~15%)")
 
 
 # ---------------------------------------------------------------------------
 # 2. Peek-safe CS would have caught premature promotion
 # ---------------------------------------------------------------------------
 
+
 def check_peek_safety():
     section("2. Peek-safe confidence sequence")
 
     if not HOLDOUT_JSON.exists():
-        print(f"[skip] holdout not found")
+        print("[skip] holdout not found")
         return
 
     holdout = json.loads(HOLDOUT_JSON.read_text(encoding="utf-8"))
@@ -103,17 +106,20 @@ def check_peek_safety():
     pdcs = PairedDiffCS(alpha=0.05)
     print("  Peek at every new observation:")
     print(f"  {'n':>3}  {'point':>8}  {'95% CI':>22}   wins?")
-    for i, (s, b) in enumerate(zip(seed_scores, best_scores), 1):
+    for i, (s, b) in enumerate(zip(seed_scores, best_scores, strict=False), 1):
         pdcs.update_pair(s, b)
         ci = pdcs.ci_diff()
         winning = pdcs.challenger_wins(margin=0.0)
-        print(f"  {i:>3}  {ci.point_estimate:+.3f}   [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}]   {winning}")
+        print(
+            f"  {i:>3}  {ci.point_estimate:+.3f}   [{ci.ci_lower:+.3f}, {ci.ci_upper:+.3f}]   {winning}"
+        )
     print("  → CS never declared challenger wins → promotion would have been blocked.")
 
 
 # ---------------------------------------------------------------------------
 # 3. Rule Conflict Linter on best.md — the POC-2 H04 killer
 # ---------------------------------------------------------------------------
+
 
 def check_rule_conflicts():
     section("3. Rule Conflict Linter on variants/best.md")

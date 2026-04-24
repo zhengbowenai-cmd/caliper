@@ -1,18 +1,14 @@
 """Tests for gradient layer: oracle, replay, shapley."""
-import re
-
-import pytest
 
 from caliper.gradient import (
+    LengthOracle,
     OracleBattery,
     RegexOracle,
-    LengthOracle,
     counterfactual_ablation,
     split_skill_sections,
     tmc_shapley,
 )
 from caliper.gradient.oracle import OracleResult
-
 
 # ---------- oracle ----------
 
@@ -33,15 +29,17 @@ def test_regex_oracle_fail():
 def test_length_oracle():
     o = LengthOracle(min_chars=5, max_chars=20)
     assert o("x", "short").passed is True
-    assert o("x", "!!").passed is False           # too short
-    assert o("x", "x" * 21).passed is False       # too long
+    assert o("x", "!!").passed is False  # too short
+    assert o("x", "x" * 21).passed is False  # too long
 
 
 def test_battery_overall_fail_on_any():
-    battery = OracleBattery(checks=[
-        RegexOracle(must_match=r"hello", label="greet"),
-        LengthOracle(max_chars=5, label="short"),
-    ])
+    battery = OracleBattery(
+        checks=[
+            RegexOracle(must_match=r"hello", label="greet"),
+            LengthOracle(max_chars=5, label="short"),
+        ]
+    )
     overall, per = battery.run("x", "hello world")  # passes greet, fails short
     assert overall.passed is False
 
@@ -49,6 +47,7 @@ def test_battery_overall_fail_on_any():
 def test_battery_no_applicable():
     """If every oracle returns None, overall is None (fall through to LLM)."""
     from caliper.gradient.oracle import CallableOracle
+
     o = CallableOracle(fn=lambda i, r: OracleResult(passed=None, detail="n/a"))
     battery = OracleBattery(checks=[o])
     overall, _ = battery.run("x", "y")
@@ -116,12 +115,13 @@ keyword important
 
 nothing special here
 """
+
     def scorer(s: str) -> float:
         return 1.0 if "keyword" in s else 0.2
 
     ace = counterfactual_ablation(md, scorer)
-    assert ace["# A"] > 0    # removing A hurts
-    assert abs(ace["# B"]) < 1e-9   # removing B doesn't change score
+    assert ace["# A"] > 0  # removing A hurts
+    assert abs(ace["# B"]) < 1e-9  # removing B doesn't change score
 
 
 # ---------- shapley ----------
@@ -146,6 +146,7 @@ beta
 
 gamma
 """
+
     def scorer(s: str) -> float:
         # score = count of included keywords
         return sum(k in s for k in ["alpha", "beta", "gamma"]) / 3.0
@@ -154,6 +155,7 @@ gamma
     empty_md = split_skill_sections(md).rebuild()  # same full
     # v(empty) = score with no sections
     from caliper.gradient.replay import split_skill_sections as _s
+
     split = _s(md)
     v_empty = scorer(split.frontmatter + split.preamble)
 
@@ -180,6 +182,7 @@ hello
 
 hello
 """
+
     def scorer(s: str) -> float:
         return s.count("hello") / 3.0
 

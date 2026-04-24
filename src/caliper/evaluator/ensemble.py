@@ -23,6 +23,7 @@ Upgrades vs v1 (batch 1 quality debt)
 - Sliding-window alpha (default last 50 rater-by-item rows).
 - Explicit `parse_error` flag on JudgeVote — no more silent score=0.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -30,9 +31,9 @@ import json
 import logging
 import re
 from collections import deque
+from collections.abc import Sequence
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import Sequence
 
 import krippendorff
 import numpy as np
@@ -71,9 +72,9 @@ Return ONLY a JSON object, no markdown fences, exactly:
 class JudgeVote:
     model_family: str
     model_id: str
-    score: float       # normalized 0-1
+    score: float  # normalized 0-1
     feedback: str
-    parse_error: bool = False   # explicit flag so low scores can be distinguished from failures
+    parse_error: bool = False  # explicit flag so low scores can be distinguished from failures
 
 
 @dataclass
@@ -82,10 +83,10 @@ class JudgeVerdict:
     mean: float
     std: float
     krippendorff_alpha: float | None
-    conservative_score: float         # mean - lambda * std
-    saturated: bool                   # every vote >= saturation threshold
-    disagreement_flag: bool           # std above disagreement threshold
-    any_parse_error: bool             # at least one judge returned invalid JSON
+    conservative_score: float  # mean - lambda * std
+    saturated: bool  # every vote >= saturation threshold
+    disagreement_flag: bool  # std above disagreement threshold
+    any_parse_error: bool  # at least one judge returned invalid JSON
 
     def as_dict(self) -> dict:
         return {
@@ -97,8 +98,13 @@ class JudgeVerdict:
             "disagreement_flag": self.disagreement_flag,
             "any_parse_error": self.any_parse_error,
             "per_vote": [
-                dict(model_family=v.model_family, model_id=v.model_id,
-                     score=v.score, feedback=v.feedback, parse_error=v.parse_error)
+                dict(
+                    model_family=v.model_family,
+                    model_id=v.model_id,
+                    score=v.score,
+                    feedback=v.feedback,
+                    parse_error=v.parse_error,
+                )
                 for v in self.per_vote
             ],
         }
@@ -132,6 +138,7 @@ def _parse_judge_json(raw: str) -> tuple[float, str, bool]:
 @dataclass
 class ConservativeReward:
     """Aggregates votes with `mean - lambda * std` penalty on disagreement."""
+
     lambda_disagreement: float = 0.5
 
     def __call__(self, scores: Sequence[float]) -> float:
@@ -144,8 +151,7 @@ class ConservativeReward:
 # ---------- cache key ----------------------------------------------------
 
 
-def _cache_key(*, model_id: str, input_: str, response: str,
-               principle: str, rubric: str) -> str:
+def _cache_key(*, model_id: str, input_: str, response: str, principle: str, rubric: str) -> str:
     h = hashlib.sha256()
     h.update(model_id.encode("utf-8"))
     h.update(b"\x1f")
@@ -162,11 +168,11 @@ def _cache_key(*, model_id: str, input_: str, response: str,
 class EnsembleJudge:
     judges: list[LLMClient]
     prompt_template: str = DEFAULT_JUDGE_PROMPT
-    saturation_threshold: float = 0.95     # every vote >= this flags saturation
-    disagreement_threshold: float = 0.20   # std > this triggers review
+    saturation_threshold: float = 0.95  # every vote >= this flags saturation
+    disagreement_threshold: float = 0.20  # std > this triggers review
     aggregator: ConservativeReward = field(default_factory=ConservativeReward)
     parallel: bool = True
-    alpha_window: int = 50                 # sliding window for Krippendorff
+    alpha_window: int = 50  # sliding window for Krippendorff
     cache_enabled: bool = True
     _cache: dict[str, JudgeVote] = field(default_factory=dict, repr=False)
     _history: deque = field(default_factory=lambda: deque(maxlen=200), repr=False)
@@ -175,8 +181,7 @@ class EnsembleJudge:
         if len(self.judges) == 0:
             raise ValueError("EnsembleJudge needs >= 1 judge")
         # rewrap history deque to correct maxlen based on alpha_window
-        object.__setattr__(self, "_history",
-                           deque(self._history, maxlen=max(2, self.alpha_window)))
+        object.__setattr__(self, "_history", deque(self._history, maxlen=max(2, self.alpha_window)))
 
     # ---- single-example scoring ---
 
@@ -188,19 +193,26 @@ class EnsembleJudge:
 
         def _ask(judge: LLMClient) -> JudgeVote:
             key = _cache_key(
-                model_id=judge.model_id, input_=input, response=response,
-                principle=principle, rubric=rubric,
+                model_id=judge.model_id,
+                input_=input,
+                response=response,
+                principle=principle,
+                rubric=rubric,
             )
             if self.cache_enabled and key in self._cache:
                 return self._cache[key]
             raw = judge.chat(
                 [ChatMessage(role="user", content=prompt)],
-                temperature=0.0, max_tokens=400,
+                temperature=0.0,
+                max_tokens=400,
             )
             score, fb, err = _parse_judge_json(raw)
             v = JudgeVote(
-                model_family=judge.family, model_id=judge.model_id,
-                score=score, feedback=fb, parse_error=err,
+                model_family=judge.family,
+                model_id=judge.model_id,
+                score=score,
+                feedback=fb,
+                parse_error=err,
             )
             if self.cache_enabled and not err:
                 self._cache[key] = v
@@ -229,9 +241,13 @@ class EnsembleJudge:
         if not scores:
             log.warning("EnsembleJudge: all judges parse-errored; returning 0 with flag")
             return JudgeVerdict(
-                per_vote=votes, mean=0.0, std=0.0,
-                krippendorff_alpha=None, conservative_score=0.0,
-                saturated=False, disagreement_flag=False,
+                per_vote=votes,
+                mean=0.0,
+                std=0.0,
+                krippendorff_alpha=None,
+                conservative_score=0.0,
+                saturated=False,
+                disagreement_flag=False,
                 any_parse_error=True,
             )
 
@@ -243,9 +259,13 @@ class EnsembleJudge:
         disagree = bool(std > self.disagreement_threshold)
         alpha = self._krippendorff_alpha_window()
         return JudgeVerdict(
-            per_vote=votes, mean=mean, std=std,
-            krippendorff_alpha=alpha, conservative_score=conservative,
-            saturated=saturated, disagreement_flag=disagree,
+            per_vote=votes,
+            mean=mean,
+            std=std,
+            krippendorff_alpha=alpha,
+            conservative_score=conservative,
+            saturated=saturated,
+            disagreement_flag=disagree,
             any_parse_error=any_err,
         )
 
@@ -287,9 +307,7 @@ class EnsembleJudge:
         total_calls = sum(j.total_calls for j in self.judges)
         total_ptk = sum(j.total_prompt_tokens for j in self.judges)
         total_ctk = sum(j.total_completion_tokens for j in self.judges)
-        out["total"] = dict(calls=total_calls,
-                            prompt_tokens=total_ptk,
-                            completion_tokens=total_ctk)
+        out["total"] = dict(calls=total_calls, prompt_tokens=total_ptk, completion_tokens=total_ctk)
         return out
 
     @property

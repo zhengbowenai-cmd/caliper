@@ -6,4 +6,5 @@ Counterfactual Shapley, Rule Conflict Linting, Ensemble Disagreement.
 
 LLMs only rewrite; gradients come from algorithms.
 """
+
 __version__ = "0.1.0"

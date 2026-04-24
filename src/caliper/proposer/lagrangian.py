@@ -11,6 +11,7 @@ Dual update every round:
 
 Stooke, Achiam, Abbeel 2020 — "Responsive Safety in RL by PID Lagrangian".
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -25,7 +26,7 @@ class LagrangianLengthConstraint:
 
     def penalty(self, length: int) -> float:
         over = max(0, length - self.l_max)
-        return self.lam * (over ** 2)
+        return self.lam * (over**2)
 
     def adjusted_reward(self, reward: float, length: int) -> float:
         return reward - self.penalty(length)

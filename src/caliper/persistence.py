@@ -19,17 +19,17 @@ Layout
 Everything is plain JSON so diffs are readable and external tools can
 inspect runs without importing caliper.
 """
+
 from __future__ import annotations
 
 import hashlib
 import json
 from dataclasses import asdict, is_dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 from caliper.schemas import SkillRun
-
 
 # ---------- helpers ----------
 
@@ -67,16 +67,20 @@ class RunDir:
     # ---- top-level ----
 
     @property
-    def config_path(self) -> Path: return self.root / "config.json"
+    def config_path(self) -> Path:
+        return self.root / "config.json"
 
     @property
-    def seed_path(self) -> Path: return self.root / "seed_skill.md"
+    def seed_path(self) -> Path:
+        return self.root / "seed_skill.md"
 
     @property
-    def champion_path(self) -> Path: return self.root / "champion.md"
+    def champion_path(self) -> Path:
+        return self.root / "champion.md"
 
     @property
-    def final_path(self) -> Path: return self.root / "final.json"
+    def final_path(self) -> Path:
+        return self.root / "final.json"
 
     # ---- per-round ----
 
@@ -148,7 +152,7 @@ def make_skill_run(
     id_seed: str | None = None,
 ) -> SkillRun:
     return SkillRun(
-        id=id_seed or datetime.now(tz=timezone.utc).strftime("%Y%m%dT%H%M%S%f"),
+        id=id_seed or datetime.now(tz=UTC).strftime("%Y%m%dT%H%M%S%f"),
         skill_version_hash=_stable_hash(skill_md),
         input=input_text,
         response=response,

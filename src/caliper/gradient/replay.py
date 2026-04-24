@@ -6,17 +6,18 @@ re-evaluate on the same eval cases. ACE_i = score(full) - score(without_i).
 This is the closest we get to "true gradient" without LLM self-attribution.
 Reference: Meng et al. 2022 (ROME causal mediation).
 """
+
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 
 @dataclass
 class SectionSplit:
-    frontmatter: str        # including both `---` fences + newline
-    preamble: str           # text between frontmatter end and first heading
+    frontmatter: str  # including both `---` fences + newline
+    preamble: str  # text between frontmatter end and first heading
     sections: list[tuple[str, str]]  # (heading_line, body_including_trailing_newlines)
 
     def rebuild(self) -> str:
@@ -48,7 +49,7 @@ def split_skill_sections(skill_md: str) -> SectionSplit:
     fm_m = re.match(r"^(---\n.*?\n---\n)", skill_md, re.S)
     if fm_m:
         frontmatter = fm_m.group(1)
-        rest = skill_md[fm_m.end():]
+        rest = skill_md[fm_m.end() :]
     else:
         frontmatter = ""
         rest = skill_md
@@ -58,7 +59,7 @@ def split_skill_sections(skill_md: str) -> SectionSplit:
     if not headings:
         return SectionSplit(frontmatter=frontmatter, preamble=rest, sections=[])
 
-    preamble = rest[:headings[0].start()]
+    preamble = rest[: headings[0].start()]
     sections: list[tuple[str, str]] = []
     for i, m in enumerate(headings):
         heading_line = m.group(1)

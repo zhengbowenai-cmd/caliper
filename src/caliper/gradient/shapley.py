@@ -9,10 +9,11 @@ Property:  sum_i phi_i = v(full) - v(empty)    (efficiency)
 Where v(S) = score(skill with only sections in S) and empty = no sections
 (only frontmatter + preamble).
 """
+
 from __future__ import annotations
 
 import random
-from typing import Callable
+from collections.abc import Callable
 
 from caliper.gradient.replay import split_skill_sections
 

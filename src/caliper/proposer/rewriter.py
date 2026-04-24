@@ -10,13 +10,13 @@ the rewriter stays the same — only its INPUT changes (from "judge
 feedback" to "Shapley-weighted per-section gradient"). The rewriter
 interface is the stable seam.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
 from caliper.proposer.linter import LintFinding
 from caliper.runtime.llm import ChatMessage, LLMClient
-
 
 REWRITE_PROMPT = """You are improving a Claude Code / Anthropic-style SKILL.md.
 
@@ -50,6 +50,7 @@ Start directly with "---" for the frontmatter.
 @dataclass
 class NaiveRewriter:
     """Single-LLM rewriter. Stateless; one call = one candidate."""
+
     llm: LLMClient
     description_char_limit: int = 1024
     body_char_limit: int = 6000
@@ -62,17 +63,21 @@ class NaiveRewriter:
         lint_findings: list[LintFinding],
         judge_critiques: list[tuple[float, str]],  # (score, critique)
     ) -> str:
-        lint_bullets = "\n".join(
-            f"- [{f.severity.value.upper()}] {f.kind}: {f.message}"
-            for f in lint_findings if f.severity.value == "high"
-        ) or "  (none)"
+        lint_bullets = (
+            "\n".join(
+                f"- [{f.severity.value.upper()}] {f.kind}: {f.message}"
+                for f in lint_findings
+                if f.severity.value == "high"
+            )
+            or "  (none)"
+        )
 
         # sort by lowest score first, take top 6
         sorted_critiques = sorted(judge_critiques, key=lambda x: x[0])[:6]
-        judge_bullets = "\n".join(
-            f"- score={s:.2f}: {c.strip()[:300]}"
-            for s, c in sorted_critiques
-        ) or "  (no critiques provided)"
+        judge_bullets = (
+            "\n".join(f"- score={s:.2f}: {c.strip()[:300]}" for s, c in sorted_critiques)
+            or "  (no critiques provided)"
+        )
 
         prompt = REWRITE_PROMPT.format(
             skill_md=current_skill_md,
@@ -98,7 +103,7 @@ def _strip_code_fences(text: str) -> str:
         # find first newline, drop
         nl = t.find("\n")
         if nl >= 0:
-            t = t[nl + 1:]
+            t = t[nl + 1 :]
     if t.endswith("```"):
         t = t[:-3]
     return t.strip()

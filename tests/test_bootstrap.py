@@ -1,13 +1,13 @@
 """Tests for safety.bootstrap."""
+
 import numpy as np
-import pytest
 
 from caliper.safety import (
     PairedComparison,
-    paired_bca_bootstrap,
     hedges_g,
-    tost_paired,
+    paired_bca_bootstrap,
     required_n_paired_t,
+    tost_paired,
 )
 
 
@@ -27,8 +27,9 @@ def test_no_effect_not_significant():
     rng = np.random.default_rng(1)
     seed = rng.uniform(0.4, 0.6, 30)
     chal = rng.uniform(0.4, 0.6, 30)
-    res = paired_bca_bootstrap(PairedComparison(seed=seed, challenger=chal),
-                               n_resamples=2000, seed=2)
+    res = paired_bca_bootstrap(
+        PairedComparison(seed=seed, challenger=chal), n_resamples=2000, seed=2
+    )
     # CI should straddle 0 (usually)
     # allow occasional false positives, re-run deterministically
     assert res.ci_lower <= 0 or res.ci_upper >= 0 or abs(res.point_estimate) < 0.1
@@ -38,8 +39,9 @@ def test_poc2_small_n_reproduces_uncertainty():
     """POC-2 holdout: seed=0.787, best=0.725, n=8, diff=-0.062."""
     seed_scores = np.array([1.0, 0.4, 0.0, 0.9, 1.0, 1.0, 1.0, 1.0])
     best_scores = np.array([1.0, 0.2, 0.0, 0.6, 1.0, 1.0, 1.0, 1.0])
-    res = paired_bca_bootstrap(PairedComparison(seed_scores, best_scores),
-                               n_resamples=5000, seed=42)
+    res = paired_bca_bootstrap(
+        PairedComparison(seed_scores, best_scores), n_resamples=5000, seed=42
+    )
     # CI should be wide enough that significance at 0 is borderline
     assert abs(res.point_estimate - (-0.0625)) < 1e-9
     # demonstrate small-n CI is wide
@@ -57,7 +59,7 @@ def test_hedges_g_small_sample_correction():
 def test_tost_equivalence():
     rng = np.random.default_rng(3)
     seed = rng.uniform(0.4, 0.6, 50)
-    chal = seed + rng.normal(0, 0.01, 50)   # basically identical
+    chal = seed + rng.normal(0, 0.01, 50)  # basically identical
     res = tost_paired(PairedComparison(seed, chal), low=-0.05, high=0.05)
     assert res["equivalent"] is True
 

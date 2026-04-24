@@ -1,4 +1,5 @@
 """Tests for safety.confseq — Hedged-Capital CS."""
+
 import numpy as np
 
 from caliper.safety import HedgedCapitalCS, PairedDiffCS
@@ -38,7 +39,9 @@ def test_paired_diff_detects_real_improvement():
         c = float(np.clip(s + 0.15 + rng.normal(0, 0.05), 0, 1))
         pdcs.update_pair(s, c)
     ci = pdcs.ci_diff()
-    assert ci.ci_lower > 0, f"expected significant positive diff, got CI=[{ci.ci_lower}, {ci.ci_upper}]"
+    assert ci.ci_lower > 0, (
+        f"expected significant positive diff, got CI=[{ci.ci_lower}, {ci.ci_upper}]"
+    )
 
 
 def test_paired_diff_no_effect_stays_around_zero():
@@ -49,4 +52,6 @@ def test_paired_diff_no_effect_stays_around_zero():
         c = float(np.clip(rng.normal(0.5, 0.1), 0, 1))
         pdcs.update_pair(s, c)
     ci = pdcs.ci_diff()
-    assert ci.ci_lower <= 0 <= ci.ci_upper, f"no-effect should straddle 0; CI=[{ci.ci_lower}, {ci.ci_upper}]"
+    assert ci.ci_lower <= 0 <= ci.ci_upper, (
+        f"no-effect should straddle 0; CI=[{ci.ci_lower}, {ci.ci_upper}]"
+    )
