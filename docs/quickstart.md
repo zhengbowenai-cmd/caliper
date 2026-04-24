@@ -1,5 +1,7 @@
 # Quickstart
 
+> 中文：[quickstart.zh-CN.md](quickstart.zh-CN.md)
+
 From zero to your first gated optimization run in ~10 minutes.
 
 ## 0. Install
