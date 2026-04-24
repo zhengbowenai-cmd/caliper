@@ -25,10 +25,20 @@ python -c "import cairosvg; cairosvg.svg2png(url='assets/banner.svg', write_to='
 
 ## Design system
 
-- **Palette (light):** `#FBFAF6` bg, `#1E2A32` primary, `#C4442D` accent, `#E9D48A` readout
-- **Palette (dark):** `#0E1619` bg, `#F0EDE5` primary, `#E07856` accent
-- **Typography:** System sans-serif stack (Inter / -apple-system / Segoe UI),
-  monospace stack (JetBrains Mono / Menlo / Consolas)
-- **Metaphor:** precision caliper measuring a `SKILL.md` token;
-  red = moving jaw = the candidate being measured against the fixed
-  reference.
+Editorial minimalism — feels like an academic journal or an instrument
+manual more than a tech-marketing splash.
+
+- **Palette (light):** `#F7F1E3` warm cream bg · `#1A1A1A` primary
+  text · `#A84E2E` terracotta accent · `#8A857B` quiet gray
+- **Palette (dark):**  `#131210` warm black bg · `#F0EBE0` ivory text
+  · `#D4825E` brighter terracotta accent · `#6B6760` quiet gray
+- **Typography:** Inter (headline, tight kerning) + JetBrains Mono
+  (instrument readouts) + PingFang / Noto Serif SC (Chinese tagline)
+- **Visual language:** faint graph-paper grid, small technical corner
+  marks like those on engineering drawings, instrument-signature
+  numbers (`± 0.001`, `bca95 · n=40`, `v0.1.0`), left-aligned wordmark
+  with a short terracotta interval rule underneath — that rule is the
+  whole logo motif: "a precise measurement between two tick marks."
+- **What we deliberately avoided:** literal caliper drawing, rainbow
+  pill tags, steel-grey engineering clipart, anything that tries too
+  hard.

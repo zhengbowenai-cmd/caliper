@@ -2,44 +2,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Caliper logo">
   <defs>
     <style>
-      .mono { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 700; letter-spacing: 0.02em; }
-      .mark { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+      .C    { font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 800; letter-spacing: -0.04em; }
+      .mono { font-family: 'JetBrains Mono', ui-monospace, 'Menlo', monospace; font-weight: 500; letter-spacing: 0.2em; }
     </style>
   </defs>
 
-  <!-- Rounded square background -->
-  <rect width="512" height="512" rx="96" ry="96" fill="#1E2A32"/>
+  <!-- Rounded-square background -->
+  <rect width="512" height="512" rx="110" ry="110" fill="#F7F1E3"/>
 
-  <!-- Main beam -->
-  <rect x="108" y="246" width="296" height="18" rx="3" fill="#FBFAF6"/>
-
-  <!-- Tick marks on beam -->
-  <g fill="#FBFAF6">
-    <rect x="130" y="232" width="3" height="14"/>
-    <rect x="170" y="236" width="3" height="10"/>
-    <rect x="210" y="232" width="3" height="14"/>
-    <rect x="250" y="236" width="3" height="10"/>
-    <rect x="290" y="232" width="3" height="14"/>
-    <rect x="330" y="236" width="3" height="10"/>
-    <rect x="370" y="232" width="3" height="14"/>
+  <!-- Instrument-frame corner marks -->
+  <g stroke="#B5A889" stroke-width="2" fill="none" opacity="0.6">
+    <path d="M 62 62  L 62 84  M 62 62  L 84 62"/>
+    <path d="M 450 62  L 450 84  M 450 62  L 428 62"/>
+    <path d="M 62 450  L 62 428  M 62 450  L 84 450"/>
+    <path d="M 450 450  L 450 428  M 450 450  L 428 450"/>
   </g>
 
-  <!-- Fixed jaw (left, white) -->
-  <rect x="105" y="150" width="20" height="114" rx="3" fill="#FBFAF6"/>
-  <rect x="105" y="262" width="20" height="100" rx="3" fill="#FBFAF6"/>
-  <polygon points="125,168 164,200 125,232" fill="#FBFAF6"/>
+  <!-- Top micro-label -->
+  <text x="256" y="120" text-anchor="middle" class="mono" font-size="20" fill="#8A857B">± 0.001</text>
 
-  <!-- Moving jaw (right, accent) -->
-  <rect x="387" y="150" width="20" height="114" rx="3" fill="#E07856"/>
-  <rect x="387" y="262" width="20" height="100" rx="3" fill="#E07856"/>
-  <polygon points="387,168 348,200 387,232" fill="#E07856"/>
+  <!-- Giant "C" with a tiny interval tick inside — wordmark mark -->
+  <text x="256" y="330" text-anchor="middle" class="C" font-size="280" fill="#1A1A1A">C</text>
 
-  <!-- Measurement indicator (between jaws) -->
-  <g transform="translate(180, 175)">
-    <rect width="152" height="50" rx="8" fill="none" stroke="#FBFAF6" stroke-width="2.5" stroke-dasharray="6 4"/>
-    <text x="76" y="33" text-anchor="middle" class="mono" font-size="22" fill="#FBFAF6">skill</text>
+  <!-- Accent interval under the C -->
+  <g>
+    <rect x="176" y="360" width="160" height="4" fill="#A84E2E"/>
+    <rect x="176" y="355" width="2" height="14" fill="#A84E2E"/>
+    <rect x="334" y="355" width="2" height="14" fill="#A84E2E"/>
   </g>
 
-  <!-- Small "C" mark in bottom for brand -->
-  <text x="256" y="418" text-anchor="middle" class="mark" font-size="72" fill="#FBFAF6" opacity="0.85">Caliper</text>
+  <!-- Bottom wordmark -->
+  <text x="256" y="420" text-anchor="middle" class="C" font-size="50" fill="#1A1A1A">Caliper</text>
 </svg>

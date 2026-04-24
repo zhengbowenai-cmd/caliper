@@ -1,67 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Caliper — dark mode">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Caliper — dark">
   <defs>
     <style>
-      .wordmark { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
-      .tagline  { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 500; letter-spacing: 0.005em; }
-      .tag-cn   { font-family: 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, sans-serif; font-weight: 400; letter-spacing: 0.04em; }
-      .mono     { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 500; }
-      .readout  { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 700; letter-spacing: 0.06em; }
+      .word  { font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 800; letter-spacing: -0.035em; }
+      .tag   { font-family: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-weight: 500; }
+      .cn    { font-family: 'PingFang SC', 'Noto Serif SC', 'Microsoft YaHei', serif; font-weight: 400; letter-spacing: 0.06em; }
+      .mono  { font-family: 'JetBrains Mono', ui-monospace, 'Menlo', 'Consolas', monospace; font-weight: 500; letter-spacing: 0.18em; }
     </style>
-    <linearGradient id="bgGradDark" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%"  stop-color="#0E1619"/>
-      <stop offset="100%" stop-color="#172128"/>
-    </linearGradient>
+    <pattern id="gridDark" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#2A2721" stroke-width="0.5" opacity="0.6"/>
+    </pattern>
   </defs>
 
-  <rect width="1200" height="320" fill="url(#bgGradDark)"/>
+  <rect width="1200" height="320" fill="#131210"/>
+  <rect width="1200" height="320" fill="url(#gridDark)"/>
 
-  <!-- beam -->
-  <rect x="90" y="155" width="280" height="10" rx="2" fill="#F0EDE5"/>
-  <g fill="#F0EDE5">
-    <rect x="110" y="145" width="2" height="10"/><rect x="140" y="148" width="2" height="7"/>
-    <rect x="170" y="145" width="2" height="10"/><rect x="200" y="148" width="2" height="7"/>
-    <rect x="230" y="145" width="2" height="10"/><rect x="260" y="148" width="2" height="7"/>
-    <rect x="290" y="145" width="2" height="10"/><rect x="320" y="148" width="2" height="7"/>
-    <rect x="350" y="145" width="2" height="10"/>
-  </g>
-  <rect x="88"  y="90"  width="12" height="75" rx="2" fill="#F0EDE5"/>
-  <rect x="88"  y="155" width="12" height="80" rx="2" fill="#F0EDE5"/>
-  <polygon points="100,100 128,115 100,130" fill="#F0EDE5"/>
-  <rect x="280" y="90"  width="12" height="75" rx="2" fill="#E07856"/>
-  <rect x="280" y="155" width="12" height="80" rx="2" fill="#E07856"/>
-  <polygon points="280,100 252,115 280,130" fill="#E07856"/>
+  <text x="60" y="46" class="mono" font-size="11" fill="#6B6760">± 0.001</text>
 
-  <g transform="translate(135, 95)">
-    <rect width="110" height="50" rx="6" fill="none" stroke="#F0EDE5" stroke-width="1.5" stroke-dasharray="4 3"/>
-    <text x="55" y="32" text-anchor="middle" class="mono" font-size="16" fill="#F0EDE5">SKILL.md</text>
+  <g stroke="#4A453A" stroke-width="0.8" fill="none" opacity="0.85">
+    <line x1="40"   y1="40"   x2="40"   y2="52"/>
+    <line x1="40"   y1="40"   x2="52"   y2="40"/>
+    <line x1="1160" y1="40"   x2="1160" y2="52"/>
+    <line x1="1160" y1="40"   x2="1148" y2="40"/>
+    <line x1="40"   y1="280"  x2="40"   y2="268"/>
+    <line x1="40"   y1="280"  x2="52"   y2="280"/>
+    <line x1="1160" y1="280"  x2="1160" y2="268"/>
+    <line x1="1160" y1="280"  x2="1148" y2="280"/>
   </g>
 
-  <rect x="120" y="235" width="220" height="50" rx="6" fill="#0B1014" stroke="#2A363D"/>
-  <text x="230" y="269" text-anchor="middle" class="readout" font-size="26" fill="#E9D48A">+0.095 ± 0.04</text>
+  <text x="60" y="188" class="word" font-size="132" fill="#F0EBE0">Caliper</text>
 
-  <text x="470" y="150" class="wordmark" font-size="104" fill="#F0EDE5">Caliper</text>
-  <text x="474" y="198" class="tagline" font-size="21" fill="#BAC3C8">Every junction has a mathematical probe.</text>
-  <text x="474" y="228" class="tag-cn" font-size="19" fill="#BAC3C8">每一个环节都带数学保证。</text>
-
-  <g transform="translate(474, 258)" font-size="13" class="mono">
-    <g>
-      <rect width="76"  height="26" rx="13" fill="#F0EDE5"/>
-      <text x="38" y="18" text-anchor="middle" fill="#0E1619">BCa CI</text>
-    </g>
-    <g transform="translate(84, 0)">
-      <rect width="120" height="26" rx="13" fill="#F0EDE5"/>
-      <text x="60" y="18" text-anchor="middle" fill="#0E1619">Hedged Capital CS</text>
-    </g>
-    <g transform="translate(212, 0)">
-      <rect width="110" height="26" rx="13" fill="#F0EDE5"/>
-      <text x="55" y="18" text-anchor="middle" fill="#0E1619">TMC-Shapley</text>
-    </g>
-    <g transform="translate(330, 0)">
-      <rect width="120" height="26" rx="13" fill="#E07856"/>
-      <text x="60" y="18" text-anchor="middle" fill="#0E1619">Rule-Conflict Lint</text>
-    </g>
+  <g>
+    <rect x="62"  y="204" width="112" height="3" fill="#D4825E"/>
+    <rect x="62"  y="200" width="1.5" height="11" fill="#D4825E"/>
+    <rect x="172" y="200" width="1.5" height="11" fill="#D4825E"/>
   </g>
 
-  <text x="1170" y="305" text-anchor="end" class="mono" font-size="11" fill="#6B7075">v0.1.0 · MIT</text>
+  <text x="60" y="244" class="tag" font-size="19" fill="#BAB4A6">
+    Algorithmically-guaranteed skill self-iteration for Claude Code.
+  </text>
+
+  <text x="60" y="273" class="cn" font-size="16" fill="#8A857B">
+    每一个环节都带数学保证。
+  </text>
+
+  <g transform="translate(1140, 188)" text-anchor="end">
+    <text class="mono" font-size="13" fill="#D4825E" letter-spacing="0.08em">[ +0.095 ± 0.040 ]</text>
+    <text y="22" class="mono" font-size="10" fill="#6B6760">paired · bca95 · n=40</text>
+  </g>
+
+  <text x="1140" y="292" class="mono" font-size="11" fill="#6B6760" text-anchor="end">
+    v0.1.0 · mit · 46 tests
+  </text>
 </svg>
