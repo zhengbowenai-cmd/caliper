@@ -1,6 +1,6 @@
 """Tests for proposer.linter — the POC H04 guard."""
-from probe.proposer import RuleConflictLinter
-from probe.proposer.linter import Severity
+from caliper.proposer import RuleConflictLinter
+from caliper.proposer.linter import Severity
 
 
 def test_catches_poc2_h04_pattern():

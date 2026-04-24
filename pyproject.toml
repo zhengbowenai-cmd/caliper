@@ -1,12 +1,12 @@
 [project]
-name = "probe"
+name = "caliper"
 version = "0.1.0"
 description = "Algorithmically-guaranteed skill self-iteration for Claude Code — every junction has a mathematical probe."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
-authors = [{ name = "Probe contributors" }]
+authors = [{ name = "Caliper contributors" }]
 keywords = [
     "claude-code",
     "agent-skills",
@@ -42,13 +42,13 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/OWNER/probe"
-Documentation = "https://github.com/OWNER/probe#readme"
-Issues = "https://github.com/OWNER/probe/issues"
-Changelog = "https://github.com/OWNER/probe/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/OWNER/caliper"
+Documentation = "https://github.com/OWNER/caliper#readme"
+Issues = "https://github.com/OWNER/caliper/issues"
+Changelog = "https://github.com/OWNER/caliper/blob/main/CHANGELOG.md"
 
 [project.scripts]
-probe = "probe.cli:cli"
+caliper = "caliper.cli:cli"
 
 [build-system]
 requires = ["uv_build>=0.11.7,<0.12.0"]
@@ -109,7 +109,7 @@ ignore = [
 "examples/**" = ["ANN", "PLR2004", "T20", "PTH"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["probe"]
+known-first-party = ["caliper"]
 combine-as-imports = true
 
 # --------------------------------------------------------------------
@@ -145,7 +145,7 @@ filterwarnings = [
 ]
 
 [tool.coverage.run]
-source = ["probe"]
+source = ["caliper"]
 branch = true
 omit = ["tests/*", "examples/*"]
 

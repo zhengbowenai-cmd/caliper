@@ -3,7 +3,7 @@ import re
 
 import pytest
 
-from probe.gradient import (
+from caliper.gradient import (
     OracleBattery,
     RegexOracle,
     LengthOracle,
@@ -11,7 +11,7 @@ from probe.gradient import (
     split_skill_sections,
     tmc_shapley,
 )
-from probe.gradient.oracle import OracleResult
+from caliper.gradient.oracle import OracleResult
 
 
 # ---------- oracle ----------
@@ -48,7 +48,7 @@ def test_battery_overall_fail_on_any():
 
 def test_battery_no_applicable():
     """If every oracle returns None, overall is None (fall through to LLM)."""
-    from probe.gradient.oracle import CallableOracle
+    from caliper.gradient.oracle import CallableOracle
     o = CallableOracle(fn=lambda i, r: OracleResult(passed=None, detail="n/a"))
     battery = OracleBattery(checks=[o])
     overall, _ = battery.run("x", "y")
@@ -153,7 +153,7 @@ gamma
     full = scorer(md)
     empty_md = split_skill_sections(md).rebuild()  # same full
     # v(empty) = score with no sections
-    from probe.gradient.replay import split_skill_sections as _s
+    from caliper.gradient.replay import split_skill_sections as _s
     split = _s(md)
     v_empty = scorer(split.frontmatter + split.preamble)
 

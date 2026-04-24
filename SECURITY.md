@@ -4,7 +4,7 @@
 
 Please **do not open a public GitHub issue** for security vulnerabilities.
 
-Instead, use [GitHub Private Vulnerability Reporting](https://github.com/OWNER/probe/security/advisories/new)
+Instead, use [GitHub Private Vulnerability Reporting](https://github.com/OWNER/caliper/security/advisories/new)
 or email the maintainers directly (address available in the repository
 `CODEOWNERS` file).
 
@@ -18,7 +18,7 @@ This policy covers:
 - Remote code execution or command injection via malformed SKILL.md / eval
   JSONL inputs
 - Secrets or API keys leaked through logs, run directories, or error messages
-- Bypasses of the budget governor (`probe.governance.budget`) that could lead
+- Bypasses of the budget governor (`caliper.governance.budget`) that could lead
   to uncapped API spend
 - Prompt-injection vectors where an eval case or judge response can escape
   its role boundary

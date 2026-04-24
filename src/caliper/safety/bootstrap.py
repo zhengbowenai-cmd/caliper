@@ -21,7 +21,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy import stats
 
-from probe.schemas import CIResult, EffectSize
+from caliper.schemas import CIResult, EffectSize
 
 
 @dataclass

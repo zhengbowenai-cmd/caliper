@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from probe.safety.bootstrap import PairedComparison, tost_paired
-from probe.persistence import RunDir
+from caliper.safety.bootstrap import PairedComparison, tost_paired
+from caliper.persistence import RunDir
 
 
 def test_bootstrap_tost_equivalent():

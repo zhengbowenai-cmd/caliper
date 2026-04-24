@@ -1,5 +1,5 @@
 """Linter Chinese + YAML block-scalar support."""
-from probe.proposer import RuleConflictLinter
+from caliper.proposer import RuleConflictLinter
 
 
 def test_chinese_absolute_without_carveout_flagged():

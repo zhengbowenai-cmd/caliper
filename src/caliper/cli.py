@@ -1,14 +1,14 @@
-"""Probe CLI: lint | compare | iterate.
+"""Caliper CLI: lint | compare | iterate.
 
 Examples
 --------
-    probe lint ~/.claude/skills/my-skill/SKILL.md
+    caliper lint ~/.claude/skills/my-skill/SKILL.md
 
-    probe compare seed.md challenger.md \
+    caliper compare seed.md challenger.md \
         --eval evals.jsonl \
         --run-dir runs/my-run
 
-    probe iterate seed.md \
+    caliper iterate seed.md \
         --eval evals.jsonl \
         --rounds 3 \
         --run-dir runs/my-run
@@ -27,16 +27,16 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from probe.evaluator.ensemble import EnsembleJudge
-from probe.optimizer import (
+from caliper.evaluator.ensemble import EnsembleJudge
+from caliper.optimizer import (
     EvalCase,
     Optimizer,
     OptimizerConfig,
     load_eval_jsonl,
 )
-from probe.proposer.linter import LintFinding, RuleConflictLinter, Severity
-from probe.proposer.rewriter import NaiveRewriter
-from probe.runtime.llm import LLMClient
+from caliper.proposer.linter import LintFinding, RuleConflictLinter, Severity
+from caliper.proposer.rewriter import NaiveRewriter
+from caliper.runtime.llm import LLMClient
 
 console = Console(legacy_windows=False, force_terminal=True, color_system="truecolor")
 
@@ -86,7 +86,7 @@ def _print_lint(findings: list[LintFinding], path: str) -> None:
 
 @click.group()
 def cli():
-    """Probe: algorithmically-guaranteed skill self-iteration."""
+    """Caliper: algorithmically-guaranteed skill self-iteration."""
     pass
 
 
@@ -114,7 +114,7 @@ def analyze(skill_path, eval_path, env_file, target_model, judge_models,
         console.print("[red]DASHSCOPE_API_KEY not set (check .env).[/red]")
         sys.exit(1)
 
-    from probe.gradient import counterfactual_ablation, split_skill_sections, tmc_shapley
+    from caliper.gradient import counterfactual_ablation, split_skill_sections, tmc_shapley
 
     md = Path(skill_path).read_text(encoding="utf-8")
     cases = load_eval_jsonl(eval_path)
@@ -125,7 +125,7 @@ def analyze(skill_path, eval_path, env_file, target_model, judge_models,
 
     # build a scorer(skill_md) -> float that evaluates on all eval cases
     import numpy as np
-    from probe.runtime.llm import ChatMessage
+    from caliper.runtime.llm import ChatMessage
 
     def scorer(skill_md_variant: str) -> float:
         scores = []
@@ -242,7 +242,7 @@ def compare(seed_path, challenger_path, eval_path, run_dir,
         config=OptimizerConfig(max_rounds=0),
     )
 
-    from probe.persistence import RunDir
+    from caliper.persistence import RunDir
     rd = RunDir(run_dir)
     rd.write_text(rd.seed_path, seed_md)
 
@@ -260,8 +260,8 @@ def compare(seed_path, challenger_path, eval_path, run_dir,
 
     # Stats
     import numpy as np
-    from probe.safety import PairedComparison, paired_bca_bootstrap, hedges_g
-    from probe.safety.confseq import PairedDiffCS
+    from caliper.safety import PairedComparison, paired_bca_bootstrap, hedges_g
+    from caliper.safety.confseq import PairedDiffCS
 
     cmp_ = PairedComparison(seed=np.array(seed_scores), challenger=np.array(chal_scores))
     ci = paired_bca_bootstrap(cmp_, n_resamples=5000, seed=42)

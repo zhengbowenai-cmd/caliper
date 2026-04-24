@@ -1,4 +1,4 @@
-"""Probe: algorithmically-guaranteed skill self-iteration.
+"""Caliper: algorithmically-guaranteed skill self-iteration.
 
 Core idea: every junction in the skill iteration loop must have a probe
 with mathematical validity — Thresholdout, Confidence Sequences,

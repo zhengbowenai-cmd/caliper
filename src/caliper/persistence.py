@@ -17,7 +17,7 @@ Layout
         final.json                   {champion_path, rounds, decision}
 
 Everything is plain JSON so diffs are readable and external tools can
-inspect runs without importing probe.
+inspect runs without importing caliper.
 """
 from __future__ import annotations
 
@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from probe.schemas import SkillRun
+from caliper.schemas import SkillRun
 
 
 # ---------- helpers ----------

@@ -38,7 +38,7 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
-from probe.schemas import CIResult
+from caliper.schemas import CIResult
 
 
 @dataclass

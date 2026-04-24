@@ -2,7 +2,7 @@
 import time
 
 import pytest
-from probe.governance.budget import Budget, BudgetExceeded, estimate_cost_cny
+from caliper.governance.budget import Budget, BudgetExceeded, estimate_cost_cny
 
 
 class _MockClient:

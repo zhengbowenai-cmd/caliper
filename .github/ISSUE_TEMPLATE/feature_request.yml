@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Probe's scope is deliberately small. New features must either:
+        Caliper's scope is deliberately small. New features must either:
         1. Close a **specific known failure mode** (cite a POC finding or paper), or
         2. Replace an existing component with a cheaper / more rigorous algorithm.
   - type: textarea
@@ -35,6 +35,6 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: The proposal does NOT require a new LLM API family (Probe stays provider-agnostic)
+        - label: The proposal does NOT require a new LLM API family (Caliper stays provider-agnostic)
         - label: The proposal comes with a citable reference OR an empirical justification
         - label: I have read `docs/architecture.md` and placed this feature in the correct layer

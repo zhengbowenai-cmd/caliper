@@ -1,7 +1,7 @@
 """Tests for safety.confseq — Hedged-Capital CS."""
 import numpy as np
 
-from probe.safety import HedgedCapitalCS, PairedDiffCS
+from caliper.safety import HedgedCapitalCS, PairedDiffCS
 
 
 def test_cs_narrows_with_samples():

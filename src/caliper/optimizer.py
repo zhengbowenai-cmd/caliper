@@ -21,22 +21,22 @@ from typing import Callable, Iterable
 
 import numpy as np
 
-from probe.evaluator.ensemble import EnsembleJudge, JudgeVerdict
-from probe.governance.budget import Budget, BudgetExceeded
-from probe.persistence import RunDir, make_skill_run
-from probe.proposer.lagrangian import LagrangianLengthConstraint
-from probe.proposer.linter import LintFinding, RuleConflictLinter, Severity
-from probe.proposer.rewriter import NaiveRewriter
-from probe.runtime.llm import ChatMessage, LLMClient
-from probe.safety.bootstrap import (
+from caliper.evaluator.ensemble import EnsembleJudge, JudgeVerdict
+from caliper.governance.budget import Budget, BudgetExceeded
+from caliper.persistence import RunDir, make_skill_run
+from caliper.proposer.lagrangian import LagrangianLengthConstraint
+from caliper.proposer.linter import LintFinding, RuleConflictLinter, Severity
+from caliper.proposer.rewriter import NaiveRewriter
+from caliper.runtime.llm import ChatMessage, LLMClient
+from caliper.safety.bootstrap import (
     PairedComparison,
     hedges_g,
     paired_bca_bootstrap,
 )
-from probe.safety.confseq import PairedDiffCS
-from probe.schemas import CIResult, Decision, EffectSize, SkillRun
+from caliper.safety.confseq import PairedDiffCS
+from caliper.schemas import CIResult, Decision, EffectSize, SkillRun
 
-log = logging.getLogger("probe.optimizer")
+log = logging.getLogger("caliper.optimizer")
 
 
 # ---------- eval case schema ----------
@@ -186,20 +186,20 @@ class Optimizer:
             log.info(msg)
 
         if resumed_from_round >= 0:
-            log_(f"[probe] RESUMING from run_dir (last round {resumed_from_round}); "
+            log_(f"[caliper] RESUMING from run_dir (last round {resumed_from_round}); "
                  f"champion promoted to seed.")
-        log_(f"[probe] starting run with {len(eval_cases)} eval cases, max_rounds={self.config.max_rounds}")
-        log_(f"[probe] budget limits = {self._budget.snapshot(self._all_llms())['limits']}")
+        log_(f"[caliper] starting run with {len(eval_cases)} eval cases, max_rounds={self.config.max_rounds}")
+        log_(f"[caliper] budget limits = {self._budget.snapshot(self._all_llms())['limits']}")
 
         # evaluate seed once (champion baseline)
-        log_(f"[probe] evaluating seed (champion) on {len(eval_cases)} cases...")
+        log_(f"[caliper] evaluating seed (champion) on {len(eval_cases)} cases...")
         seed_runs = self._eval_skill(seed_md, eval_cases)
         seed_scores = [self._run_score(r) for r in seed_runs]
-        log_(f"[probe] seed mean = {np.mean(seed_scores):.3f}")
+        log_(f"[caliper] seed mean = {np.mean(seed_scores):.3f}")
         try:
             self._budget.check(self._all_llms())
         except BudgetExceeded as e:
-            log_(f"[probe] budget exceeded during seed eval: {e}")
+            log_(f"[caliper] budget exceeded during seed eval: {e}")
 
         champion_md = seed_md
         champion_scores = seed_scores
@@ -215,11 +215,11 @@ class Optimizer:
                 self._budget.tick_round()
                 self._budget.check(self._all_llms())
             except BudgetExceeded as e:
-                log_(f"[probe] stopping: {e}")
+                log_(f"[caliper] stopping: {e}")
                 break
 
             snap = self._budget.snapshot(self._all_llms())
-            log_(f"[probe] ─── round {i} ─── "
+            log_(f"[caliper] ─── round {i} ─── "
                  f"elapsed={snap['wallclock_s']}s tokens={snap['tokens']:,} "
                  f"cost=¥{snap['cost_cny_est']:.2f}")
 
@@ -237,7 +237,7 @@ class Optimizer:
             lint_blocked = self.linter.has_blocking_findings(findings)
 
             if lint_blocked:
-                log_(f"[probe] round {i}: LINTER BLOCKED "
+                log_(f"[caliper] round {i}: LINTER BLOCKED "
                      f"({sum(1 for f in findings if f.severity == Severity.HIGH)} HIGH findings)")
                 report = RoundReport(
                     round_num=i,
@@ -262,10 +262,10 @@ class Optimizer:
                 continue  # champion holds
 
             # ---- gate 2: judge panel ----
-            log_(f"[probe] round {i}: evaluating candidate on {len(eval_cases)} cases...")
+            log_(f"[caliper] round {i}: evaluating candidate on {len(eval_cases)} cases...")
             cand_runs = self._eval_skill(candidate_md, eval_cases)
             cand_scores = [self._run_score(r) for r in cand_runs]
-            log_(f"[probe] round {i}: candidate mean = {np.mean(cand_scores):.3f}, "
+            log_(f"[caliper] round {i}: candidate mean = {np.mean(cand_scores):.3f}, "
                  f"champion mean = {np.mean(champion_scores):.3f}")
 
             rd.write_skill_runs(i, cand_runs)
@@ -282,7 +282,7 @@ class Optimizer:
             # update dual ascent (pulls lambda up if candidates keep overrunning)
             self._lagrangian.update(len(body))
             if length_penalty > 0:
-                log_(f"[probe] round {i}: body {len(body)} chars, "
+                log_(f"[caliper] round {i}: body {len(body)} chars, "
                      f"lagrangian penalty={length_penalty:.4f}")
 
             # ---- gate 3 & 4: bootstrap + CS ----
@@ -321,7 +321,7 @@ class Optimizer:
             reports.append(report)
 
             if accept:
-                log_(f"[probe] round {i}: ACCEPT — {reason}")
+                log_(f"[caliper] round {i}: ACCEPT — {reason}")
                 champion_md = candidate_md
                 champion_scores = cand_scores
                 champion_runs = cand_runs
@@ -329,10 +329,10 @@ class Optimizer:
                 # reset CS: new champion means new baseline
                 pdcs = PairedDiffCS(alpha=self.config.cs_alpha)
             else:
-                log_(f"[probe] round {i}: REJECT — {reason}")
+                log_(f"[caliper] round {i}: REJECT — {reason}")
 
         # ---- final ----
-        from probe.persistence import _stable_hash  # type: ignore
+        from caliper.persistence import _stable_hash  # type: ignore
         final = OptimizerResult(
             champion_md=champion_md,
             champion_hash=_stable_hash(champion_md),
@@ -358,7 +358,7 @@ class Optimizer:
             },
             "cache_hit_size": len(self.judges._cache),
         })
-        log_(f"[probe] done. champion hash = {final.champion_hash}, "
+        log_(f"[caliper] done. champion hash = {final.champion_hash}, "
              f"replaced = {champion_md != seed_md}")
         return final
 
@@ -406,7 +406,7 @@ class Optimizer:
                 id_seed=case.id,
             )
             # fold judge votes into SkillRun
-            from probe.schemas import JudgeScore
+            from caliper.schemas import JudgeScore
             run.judges = [
                 JudgeScore(
                     model_family=v.model_family,

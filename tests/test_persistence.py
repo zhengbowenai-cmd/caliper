@@ -2,8 +2,8 @@
 import json
 from pathlib import Path
 
-from probe.persistence import RunDir, make_skill_run
-from probe.schemas import SkillRun, JudgeScore
+from caliper.persistence import RunDir, make_skill_run
+from caliper.schemas import SkillRun, JudgeScore
 
 
 def test_rundir_layout(tmp_path: Path):
@@ -46,7 +46,7 @@ def test_list_rounds(tmp_path: Path):
 
 def test_write_json_pydantic_model(tmp_path: Path):
     rd = RunDir(tmp_path / "r3")
-    from probe.schemas import Decision
+    from caliper.schemas import Decision
     d = Decision(accept=True, reason="ok", evidence={"n": 5})
     rd.write_json(rd.verdict_path(0), d)
     data = json.loads(rd.verdict_path(0).read_text(encoding="utf-8"))

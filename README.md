@@ -1,4 +1,4 @@
-<h1 align="center">Probe</h1>
+<h1 align="center">Caliper</h1>
 
 <p align="center">
   <strong>Algorithmically-guaranteed skill self-iteration for Claude Code.</strong>
@@ -9,8 +9,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/OWNER/probe/actions"><img src="https://img.shields.io/github/actions/workflow/status/OWNER/probe/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
-  <a href="https://github.com/OWNER/probe/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
+  <a href="https://github.com/OWNER/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/OWNER/caliper/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
+  <a href="https://github.com/OWNER/caliper/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-informational?style=flat-square" alt="Python 3.12+"/>
   <img src="https://img.shields.io/badge/types-pyright-forestgreen?style=flat-square" alt="Pyright"/>
   <img src="https://img.shields.io/badge/lint-ruff-orange?style=flat-square" alt="Ruff"/>
@@ -18,7 +18,7 @@
 
 ---
 
-## Why does Probe exist?
+## Why does Caliper exist?
 
 Two rounds of POC on the Claude Code skill-iteration loop uncovered three recurring failure modes:
 
@@ -26,7 +26,7 @@ Two rounds of POC on the Claude Code skill-iteration loop uncovered three recurr
 2. **LLM reflection is noise, not gradient.** Attribution accuracy < 10% (AgenTracer / MAST 2025).
 3. **Internal rule conflicts.** GEPA produced a skill whose "Always include a checklist" rule silently overrode a "trivial exception" rule, tanking every simple task.
 
-None of the existing gates caught any of these. Probe is the algorithmic armor that does.
+None of the existing gates caught any of these. Caliper is the algorithmic armor that does.
 
 ---
 
@@ -38,7 +38,7 @@ Three axioms, not negotiable:
 |---|-----------|-------------|
 | 1 | **Gradients come from algorithms, not LLMs.** | Reflection is a writer, not an attributor. Use Counterfactual Replay + TMC-Shapley instead. |
 | 2 | **Every decision carries mathematical validity.** | No point-estimate promotions. BCa bootstrap, Hedges' g, Hedged-Capital CS, all reported. |
-| 3 | **External anchors are irreplaceable.** | No pure-algorithmic system escapes the self-proof trap. Probe integrates human-in-the-loop gates and real user signals. |
+| 3 | **External anchors are irreplaceable.** | No pure-algorithmic system escapes the self-proof trap. Caliper integrates human-in-the-loop gates and real user signals. |
 
 ---
 
@@ -46,11 +46,11 @@ Three axioms, not negotiable:
 
 ```bash
 # with uv (recommended — fast, no system Python pollution)
-uv tool install probe
+uv tool install caliper
 
 # or from source
-git clone https://github.com/OWNER/probe.git
-cd probe
+git clone https://github.com/OWNER/caliper.git
+cd caliper
 uv sync --dev
 ```
 
@@ -71,17 +71,17 @@ Four CLI commands, all with rich terminal output and JSON-persistent run directo
 ```bash
 # 1. Static lint — catches the POC H04 "always checklist + trivial exception" bug,
 #    description length overrun, invalid YAML, rule conflicts. Multilingual (EN + 中文).
-probe lint path/to/SKILL.md
+caliper lint path/to/SKILL.md
 
 # 2. Per-section attribution — Counterfactual ablation + TMC-Shapley.
 #    Tells you which sections of your skill are actually pulling their weight.
-probe analyze skill.md --eval cases.jsonl
+caliper analyze skill.md --eval cases.jsonl
 
 # 3. Head-to-head — paired BCa bootstrap + Hedges' g + peek-safe CS + linter.
-probe compare seed.md challenger.md --eval cases.jsonl --run-dir runs/x
+caliper compare seed.md challenger.md --eval cases.jsonl --run-dir runs/x
 
 # 4. Full optimization loop — propose → lint → eval → decide, with hard budget caps.
-probe iterate seed.md --eval cases.jsonl --rounds 3 \
+caliper iterate seed.md --eval cases.jsonl --rounds 3 \
     --run-dir runs/my-run \
     --judge-models qwen3.6-plus,qwen-max,qwen-plus \
     --max-cost-cny 50 \
@@ -145,21 +145,21 @@ Eight-layer design; the MVP ships four. See [`docs/architecture.md`](docs/archit
 
 | Path | What it does | Key refs |
 |------|--------------|----------|
-| `probe.safety.bootstrap` | Paired BCa bootstrap · Hedges' g · TOST (both t and bootstrap) · power | Efron 1987 · Hedges 1981 · Schuirmann 1987 |
-| `probe.safety.confseq` | Hedged-Capital Confidence Sequence — peek-safe intervals | Waudby-Smith & Ramdas 2024 JRSSB |
-| `probe.gradient.oracle` | Programmatic pass/fail checks | — |
-| `probe.gradient.replay` | Counterfactual section ablation | Meng et al. 2022 (ROME) |
-| `probe.gradient.shapley` | TMC Monte-Carlo Shapley over sections | Castro et al. 2009 · Ghorbani-Zou 2019 |
-| `probe.evaluator.ensemble` | Multi-family ensemble · Krippendorff α · judge caching | Coste et al. 2024 ICLR · Krippendorff 2011 |
-| `probe.proposer.linter` | Rule-Conflict Linter (EN + 中文) | POC-2 H04 |
-| `probe.proposer.lagrangian` | Length constraint with dual ascent | Stooke et al. 2020 |
-| `probe.proposer.rewriter` | LLM skill rewriter | — |
-| `probe.governance.budget` | Token / wallclock / cost / rounds budget | — |
-| `probe.runtime.llm` | OpenAI-compatible client with retry + token counting | — |
-| `probe.optimizer` | Orchestrator wiring every gate | — |
-| `probe.cli` | `probe lint / analyze / compare / iterate` | — |
-| `probe.persistence` | JSON run-dir layout · SkillRun serialization | — |
-| `probe.schemas` | `SkillRun`, `CIResult`, `Decision`, `EffectSize` | — |
+| `caliper.safety.bootstrap` | Paired BCa bootstrap · Hedges' g · TOST (both t and bootstrap) · power | Efron 1987 · Hedges 1981 · Schuirmann 1987 |
+| `caliper.safety.confseq` | Hedged-Capital Confidence Sequence — peek-safe intervals | Waudby-Smith & Ramdas 2024 JRSSB |
+| `caliper.gradient.oracle` | Programmatic pass/fail checks | — |
+| `caliper.gradient.replay` | Counterfactual section ablation | Meng et al. 2022 (ROME) |
+| `caliper.gradient.shapley` | TMC Monte-Carlo Shapley over sections | Castro et al. 2009 · Ghorbani-Zou 2019 |
+| `caliper.evaluator.ensemble` | Multi-family ensemble · Krippendorff α · judge caching | Coste et al. 2024 ICLR · Krippendorff 2011 |
+| `caliper.proposer.linter` | Rule-Conflict Linter (EN + 中文) | POC-2 H04 |
+| `caliper.proposer.lagrangian` | Length constraint with dual ascent | Stooke et al. 2020 |
+| `caliper.proposer.rewriter` | LLM skill rewriter | — |
+| `caliper.governance.budget` | Token / wallclock / cost / rounds budget | — |
+| `caliper.runtime.llm` | OpenAI-compatible client with retry + token counting | — |
+| `caliper.optimizer` | Orchestrator wiring every gate | — |
+| `caliper.cli` | `caliper lint / analyze / compare / iterate` | — |
+| `caliper.persistence` | JSON run-dir layout · SkillRun serialization | — |
+| `caliper.schemas` | `SkillRun`, `CIResult`, `Decision`, `EffectSize` | — |
 
 ---
 
@@ -199,7 +199,7 @@ uv sync --dev
 uv run ruff check .
 uv run ruff format --check .
 uv run pyright
-uv run pytest --cov=probe
+uv run pytest --cov=caliper
 ```
 
 ---

@@ -1,4 +1,4 @@
-# Probe Architecture
+# Caliper Architecture
 
 > This document describes the full V1 architecture. The MVP ships the
 > **Statistical Safety**, **Gradient Source**, **Proposer**, **Evaluator**,
@@ -8,7 +8,7 @@
 
 1. **Gradients come from algorithms, not LLMs.** Reflection attribution
    is empirically noisy (< 10 % accuracy on complex traces — AgenTracer,
-   MAST). Probe replaces "ask an LLM what went wrong" with
+   MAST). Caliper replaces "ask an LLM what went wrong" with
    Counterfactual Replay + TMC-Shapley.
 2. **Every decision carries mathematical validity.** A point estimate
    never promotes a candidate by itself; only a paired BCa bootstrap
@@ -65,16 +65,16 @@ Every rejection is *recorded with reason* in `verdict.json`. No silent drops.
 
 | Gate | Library | Raise when | Typical cause |
 |------|---------|------------|---------------|
-| Linter | `probe.proposer.linter` | any HIGH finding | rule conflict, frontmatter overrun |
-| Judge panel | `probe.evaluator.ensemble` | all judges `parse_error` | rubric misaligned, LLM refusal |
-| Bootstrap CI | `probe.safety.bootstrap` | CI straddles 0 | small n, noisy metric |
-| CS | `probe.safety.confseq` | lower bound ≤ margin | insufficient evidence under sequential peek |
-| Budget | `probe.governance.budget` | wallclock / tokens / yuan / rounds exceeded | — |
+| Linter | `caliper.proposer.linter` | any HIGH finding | rule conflict, frontmatter overrun |
+| Judge panel | `caliper.evaluator.ensemble` | all judges `parse_error` | rubric misaligned, LLM refusal |
+| Bootstrap CI | `caliper.safety.bootstrap` | CI straddles 0 | small n, noisy metric |
+| CS | `caliper.safety.confseq` | lower bound ≤ margin | insufficient evidence under sequential peek |
+| Budget | `caliper.governance.budget` | wallclock / tokens / yuan / rounds exceeded | — |
 
 ## Data contract — `SkillRun`
 
 Every component reads and writes the same schema. See
-[`src/probe/schemas.py`](../src/probe/schemas.py).
+[`src/caliper/schemas.py`](../src/caliper/schemas.py).
 
 ```python
 class SkillRun(BaseModel):
@@ -98,18 +98,18 @@ tooling (jq, DuckDB) can query them directly.
 
 ## What is *not* in scope
 
-- Fine-tuning model weights. Probe operates on skill text only.
+- Fine-tuning model weights. Caliper operates on skill text only.
 - Running arbitrary user tools. Skills are assumed to go through Claude
-  Code's own tool-use; Probe just writes the SKILL.md.
-- Replacing the LLM. Probe is provider-agnostic; bring your own
+  Code's own tool-use; Caliper just writes the SKILL.md.
+- Replacing the LLM. Caliper is provider-agnostic; bring your own
   OpenAI-compatible endpoint.
 
 ## Replaceable adapters
 
-Every external system is an adapter behind a Probe interface. Swapping
+Every external system is an adapter behind a Caliper interface. Swapping
 any of these does not touch the gate chain:
 
-| Probe interface | Adapter today | Swappable with |
+| Caliper interface | Adapter today | Swappable with |
 |-----------------|---------------|----------------|
 | `LLMClient` | OpenAI SDK + `api_base` override | Anthropic Messages SDK, vLLM, local |
 | `ensemble.EnsembleJudge` | per-case parallel call | Inspect AI Scorer |

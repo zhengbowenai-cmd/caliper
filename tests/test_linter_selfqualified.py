@@ -1,5 +1,5 @@
 """Regression: self-qualified absolute rules should NOT be flagged."""
-from probe.proposer import RuleConflictLinter
+from caliper.proposer import RuleConflictLinter
 
 
 def test_inline_exception_not_flagged():

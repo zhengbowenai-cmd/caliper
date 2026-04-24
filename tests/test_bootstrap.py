@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from probe.safety import (
+from caliper.safety import (
     PairedComparison,
     paired_bca_bootstrap,
     hedges_g,

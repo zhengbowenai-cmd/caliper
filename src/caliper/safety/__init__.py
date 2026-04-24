@@ -1,4 +1,4 @@
-from probe.safety.bootstrap import (
+from caliper.safety.bootstrap import (
     PairedComparison,
     paired_bca_bootstrap,
     hedges_g,
@@ -6,7 +6,7 @@ from probe.safety.bootstrap import (
     effect_size_interpretation,
     required_n_paired_t,
 )
-from probe.safety.confseq import HedgedCapitalCS, PairedDiffCS
+from caliper.safety.confseq import HedgedCapitalCS, PairedDiffCS
 
 __all__ = [
     "PairedComparison",

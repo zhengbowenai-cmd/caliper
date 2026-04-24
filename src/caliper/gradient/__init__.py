@@ -9,15 +9,15 @@ Three tools:
   - replay    Counterfactual ablation — remove skill section, re-evaluate
   - shapley   TMC Shapley — Monte Carlo attribution across sections
 """
-from probe.gradient.oracle import (
+from caliper.gradient.oracle import (
     OracleResult as OracleCheckResult,
     OracleCheck,
     RegexOracle,
     LengthOracle,
     OracleBattery,
 )
-from probe.gradient.replay import SectionSplit, split_skill_sections, counterfactual_ablation
-from probe.gradient.shapley import tmc_shapley
+from caliper.gradient.replay import SectionSplit, split_skill_sections, counterfactual_ablation
+from caliper.gradient.shapley import tmc_shapley
 
 __all__ = [
     "OracleCheckResult", "OracleCheck", "RegexOracle", "LengthOracle",

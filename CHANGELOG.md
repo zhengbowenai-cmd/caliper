@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to **Probe** are documented in this file.
+All notable changes to **Caliper** are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- `probe.gradient.oracle` — programmatic pass/fail checks authoritative over LLM judges.
-- `probe.gradient.replay` — section-level counterfactual ablation (CF ACE).
-- `probe.gradient.shapley` — TMC Monte-Carlo Shapley over skill sections with subset caching.
-- `probe.governance.budget` — hard wallclock / token / cost / rounds budgets.
-- `probe.proposer.lagrangian` — length constraint with dual ascent; now wired into the optimizer.
-- `probe iterate --resume` — resume a run from its existing champion.
-- `probe analyze` CLI command — runs CF + Shapley on a skill without proposing changes.
+- `caliper.gradient.oracle` — programmatic pass/fail checks authoritative over LLM judges.
+- `caliper.gradient.replay` — section-level counterfactual ablation (CF ACE).
+- `caliper.gradient.shapley` — TMC Monte-Carlo Shapley over skill sections with subset caching.
+- `caliper.governance.budget` — hard wallclock / token / cost / rounds budgets.
+- `caliper.proposer.lagrangian` — length constraint with dual ascent; now wired into the optimizer.
+- `caliper iterate --resume` — resume a run from its existing champion.
+- `caliper analyze` CLI command — runs CF + Shapley on a skill without proposing changes.
 - LLM client retry with exponential backoff + token/call accounting.
 - Judge result cache keyed by content hash — halves API cost on re-runs.
 - Ensemble judge sliding-window Krippendorff α (default 50 items).
@@ -47,5 +47,5 @@ First internal MVP.
 - CLI commands: `lint`, `compare`, `iterate`.
 - 22 unit tests; end-to-end verification on POC-2 data.
 
-[Unreleased]: https://github.com/OWNER/probe/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/OWNER/probe/releases/tag/v0.1.0
+[Unreleased]: https://github.com/OWNER/caliper/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/OWNER/caliper/releases/tag/v0.1.0

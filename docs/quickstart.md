@@ -9,14 +9,14 @@ From zero to your first gated optimization run in ~10 minutes.
 curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS/Linux
 # or: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"   # Windows
 
-git clone https://github.com/OWNER/probe.git
-cd probe
+git clone https://github.com/OWNER/caliper.git
+cd caliper
 uv sync --dev
 ```
 
 ## 1. Bring a provider key
 
-Probe talks to any OpenAI-compatible LLM. DashScope / Qwen works well
+Caliper talks to any OpenAI-compatible LLM. DashScope / Qwen works well
 and is inexpensive for Chinese users.
 
 ```bash
@@ -36,7 +36,7 @@ export DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ## 2. Lint a skill
 
 ```bash
-uv run probe lint ~/.claude/skills/my-skill/SKILL.md
+uv run caliper lint ~/.claude/skills/my-skill/SKILL.md
 ```
 
 Exit code 0 = clean. Exit code 2 = HIGH findings (rule conflict, missing
@@ -58,7 +58,7 @@ smoke-test the pipeline but will almost never promote.
 ## 4. Compare two versions
 
 ```bash
-uv run probe compare seed.md challenger.md \
+uv run caliper compare seed.md challenger.md \
     --eval eval.jsonl \
     --run-dir runs/cmp-1
 ```
@@ -69,7 +69,7 @@ Confidence Sequence CI, and linter findings for both sides.
 ## 5. Run the full loop with a budget cap
 
 ```bash
-uv run probe iterate seed.md \
+uv run caliper iterate seed.md \
     --eval eval.jsonl \
     --rounds 3 \
     --run-dir runs/iter-1 \
@@ -102,7 +102,7 @@ cat runs/iter-1/rounds/round_000/verdict.json | jq
 ## 8. Next: per-section attribution
 
 ```bash
-uv run probe analyze skill.md --eval eval.jsonl --permutations 15
+uv run caliper analyze skill.md --eval eval.jsonl --permutations 15
 ```
 
 Tells you which sections of your skill are contributing. Drop or

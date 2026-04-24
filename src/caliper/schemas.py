@@ -35,7 +35,7 @@ class OracleResult(BaseModel):
 
 
 class SkillRun(BaseModel):
-    """The unified schema every probe component speaks."""
+    """The unified schema every Caliper component speaks."""
     id: str
     skill_version_hash: str
     input: str

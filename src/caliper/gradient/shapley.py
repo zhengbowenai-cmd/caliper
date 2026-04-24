@@ -14,7 +14,7 @@ from __future__ import annotations
 import random
 from typing import Callable
 
-from probe.gradient.replay import split_skill_sections
+from caliper.gradient.replay import split_skill_sections
 
 
 def _value_of_subset(split, idx_set: frozenset[int], scorer: Callable[[str], float]) -> float:

@@ -28,7 +28,7 @@ htmlcov/
 .pyright/
 .ruff_cache/
 
-# Probe run artifacts — user runs, not source
+# Caliper run artifacts — user runs, not source
 runs/
 
 # Editor

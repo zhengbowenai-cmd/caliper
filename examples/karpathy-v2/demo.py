@@ -1,6 +1,6 @@
-"""Demo: re-analyze the POC-2 result through the Probe lens.
+"""Demo: re-analyze the POC-2 result through the Caliper lens.
 
-Shows how every Probe module would have changed the POC-2 conclusion:
+Shows how every Caliper module would have changed the POC-2 conclusion:
 
 1. safety.bootstrap → the "+17%" was not statistically significant
 2. proposer.linter  → best.md had a rule conflict causing H04 regression
@@ -8,7 +8,7 @@ Shows how every Probe module would have changed the POC-2 conclusion:
 4. evaluator        → single-family judge made the whole thing self-referential
 
 Run with:
-    cd probe && uv run python examples/karpathy-v2/demo.py
+    cd caliper && uv run python examples/karpathy-v2/demo.py
 """
 from __future__ import annotations
 
@@ -17,8 +17,8 @@ from pathlib import Path
 
 import numpy as np
 
-from probe.proposer import RuleConflictLinter
-from probe.safety import (
+from caliper.proposer import RuleConflictLinter
+from caliper.safety import (
     PairedComparison,
     PairedDiffCS,
     hedges_g,
@@ -151,5 +151,5 @@ if __name__ == "__main__":
     check_peek_safety()
     check_rule_conflicts()
     print("\n" + "=" * 72)
-    print("  DONE — POC-2's '+17%' reopened under Probe's algorithmic lens.")
+    print("  DONE — POC-2's '+17%' reopened under Caliper's algorithmic lens.")
     print("=" * 72)

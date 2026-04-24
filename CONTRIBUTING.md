@@ -1,6 +1,6 @@
-# Contributing to Probe
+# Contributing to Caliper
 
-Thank you for considering a contribution. Probe's value depends on
+Thank you for considering a contribution. Caliper's value depends on
 mathematical rigor and verifiable claims — please help us keep both.
 
 ## Ground rules
@@ -18,8 +18,8 @@ mathematical rigor and verifiable claims — please help us keep both.
 
 ```bash
 # install uv if you don't have it: https://docs.astral.sh/uv/
-git clone https://github.com/OWNER/probe.git
-cd probe
+git clone https://github.com/OWNER/caliper.git
+cd caliper
 uv sync --dev                         # install deps + dev extras
 uv run pre-commit install             # set up git hooks
 ```
@@ -30,14 +30,14 @@ uv run pre-commit install             # set up git hooks
 uv run ruff format .                  # auto-format
 uv run ruff check --fix .             # lint + autofix
 uv run pyright                        # type check
-uv run pytest -x --cov=probe          # tests with coverage
+uv run pytest -x --cov=caliper          # tests with coverage
 ```
 
 ### Running the CLI locally
 
 ```bash
 # smoke-test lint
-uv run probe lint examples/karpathy-v2/seed_skill.md
+uv run caliper lint examples/karpathy-v2/seed_skill.md
 
 # replay POC-2 audit without any LLM calls
 uv run python examples/karpathy-v2/demo.py

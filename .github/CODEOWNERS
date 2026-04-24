@@ -5,7 +5,7 @@
 *                                   @OWNER
 
 # Critical areas request explicit review from statistical owners:
-/src/probe/safety/                  @OWNER
-/src/probe/gradient/                @OWNER
-/src/probe/governance/              @OWNER
+/src/caliper/safety/                  @OWNER
+/src/caliper/gradient/                @OWNER
+/src/caliper/governance/              @OWNER
 /docs/algorithms.md                 @OWNER

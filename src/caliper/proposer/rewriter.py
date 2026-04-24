@@ -14,8 +14,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from probe.proposer.linter import LintFinding
-from probe.runtime.llm import ChatMessage, LLMClient
+from caliper.proposer.linter import LintFinding
+from caliper.runtime.llm import ChatMessage, LLMClient
 
 
 REWRITE_PROMPT = """You are improving a Claude Code / Anthropic-style SKILL.md.

@@ -1,4 +1,4 @@
-from probe.evaluator.ensemble import (
+from caliper.evaluator.ensemble import (
     EnsembleJudge,
     JudgeVerdict,
     ConservativeReward,

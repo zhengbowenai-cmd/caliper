@@ -15,7 +15,7 @@ from typing import Sequence
 
 from openai import APIConnectionError, APIError, OpenAI, RateLimitError
 
-log = logging.getLogger("probe.runtime.llm")
+log = logging.getLogger("caliper.runtime.llm")
 
 
 @dataclass

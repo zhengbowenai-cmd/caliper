@@ -1,6 +1,6 @@
 # Algorithms & References
 
-Every numerical gate in Probe maps to a peer-reviewed source. When you
+Every numerical gate in Caliper maps to a peer-reviewed source. When you
 touch one of these modules in a PR, please cite the paper and specify
 which equation / section the implementation follows.
 
@@ -59,5 +59,5 @@ runs rather than theory alone.
   arXiv:2502.13295.
 - Self-preference bias — Panickssery et al. 2024.
   *LLM Evaluators Recognize and Favor Their Own Generations*.
-- Judge saturation — empirically observed in Probe POC-2 (5 of 8
+- Judge saturation — empirically observed in Caliper POC-2 (5 of 8
   holdout cases saturated at 1.0 on both variants).

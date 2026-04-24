@@ -37,9 +37,9 @@ from typing import Sequence
 import krippendorff
 import numpy as np
 
-from probe.runtime.llm import ChatMessage, LLMClient
+from caliper.runtime.llm import ChatMessage, LLMClient
 
-log = logging.getLogger("probe.evaluator.ensemble")
+log = logging.getLogger("caliper.evaluator.ensemble")
 
 
 # ---------- judge protocol -----------------------------------------------

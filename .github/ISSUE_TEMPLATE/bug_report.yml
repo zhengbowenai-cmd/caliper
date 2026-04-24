@@ -1,17 +1,17 @@
 name: Bug report
-description: Report a problem with Probe — statistics, linter, optimizer, CLI, etc.
+description: Report a problem with Caliper — statistics, linter, optimizer, CLI, etc.
 title: "[bug] "
 labels: ["bug", "needs-triage"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to file a bug. Probe's value depends on
+        Thanks for taking the time to file a bug. Caliper's value depends on
         mathematical rigor — the more reproducible the report, the faster we can fix it.
   - type: input
-    id: probe-version
+    id: caliper-version
     attributes:
-      label: Probe version
+      label: Caliper version
       placeholder: "0.1.0 (git hash if from main)"
     validations:
       required: true

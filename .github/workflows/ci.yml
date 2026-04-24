@@ -58,7 +58,7 @@ jobs:
         run: uv sync --dev
 
       - name: Run tests
-        run: uv run pytest --cov=probe --cov-report=xml --cov-report=term -v
+        run: uv run pytest --cov=caliper --cov-report=xml --cov-report=term -v
 
       - name: Upload coverage (Ubuntu+3.12 only)
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
