@@ -1,11 +1,8 @@
-<h1 align="center">Caliper</h1>
-
 <p align="center">
-  <strong>面向 Claude Code 的 skill 自迭代——每一个环节都带数学保证。</strong>
-  <br/>
-  迭代循环里每一个关键环节都装上一把"数学卡尺"，
-  <br/>
-  让系统在无人监督的情况下依然知道自己在做什么。
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+    <img alt="Caliper — 面向 Claude Code 的 skill 自迭代" src="assets/banner.svg" width="100%">
+  </picture>
 </p>
 
 <p align="center">

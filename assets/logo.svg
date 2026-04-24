@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Caliper logo">
+  <defs>
+    <style>
+      .mono { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 700; letter-spacing: 0.02em; }
+      .mark { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
+    </style>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="96" ry="96" fill="#1E2A32"/>
+
+  <!-- Main beam -->
+  <rect x="108" y="246" width="296" height="18" rx="3" fill="#FBFAF6"/>
+
+  <!-- Tick marks on beam -->
+  <g fill="#FBFAF6">
+    <rect x="130" y="232" width="3" height="14"/>
+    <rect x="170" y="236" width="3" height="10"/>
+    <rect x="210" y="232" width="3" height="14"/>
+    <rect x="250" y="236" width="3" height="10"/>
+    <rect x="290" y="232" width="3" height="14"/>
+    <rect x="330" y="236" width="3" height="10"/>
+    <rect x="370" y="232" width="3" height="14"/>
+  </g>
+
+  <!-- Fixed jaw (left, white) -->
+  <rect x="105" y="150" width="20" height="114" rx="3" fill="#FBFAF6"/>
+  <rect x="105" y="262" width="20" height="100" rx="3" fill="#FBFAF6"/>
+  <polygon points="125,168 164,200 125,232" fill="#FBFAF6"/>
+
+  <!-- Moving jaw (right, accent) -->
+  <rect x="387" y="150" width="20" height="114" rx="3" fill="#E07856"/>
+  <rect x="387" y="262" width="20" height="100" rx="3" fill="#E07856"/>
+  <polygon points="387,168 348,200 387,232" fill="#E07856"/>
+
+  <!-- Measurement indicator (between jaws) -->
+  <g transform="translate(180, 175)">
+    <rect width="152" height="50" rx="8" fill="none" stroke="#FBFAF6" stroke-width="2.5" stroke-dasharray="6 4"/>
+    <text x="76" y="33" text-anchor="middle" class="mono" font-size="22" fill="#FBFAF6">skill</text>
+  </g>
+
+  <!-- Small "C" mark in bottom for brand -->
+  <text x="256" y="418" text-anchor="middle" class="mark" font-size="72" fill="#FBFAF6" opacity="0.85">Caliper</text>
+</svg>

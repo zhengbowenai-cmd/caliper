@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" width="1200" height="320" role="img" aria-label="Caliper — Algorithmically-guaranteed skill self-iteration">
+  <defs>
+    <style>
+      .wordmark { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.02em; }
+      .tagline  { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif; font-weight: 500; letter-spacing: 0.005em; }
+      .tag-cn   { font-family: 'PingFang SC', 'Microsoft YaHei', ui-sans-serif, sans-serif; font-weight: 400; letter-spacing: 0.04em; }
+      .mono     { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 500; }
+      .readout  { font-family: ui-monospace, 'JetBrains Mono', 'Menlo', 'Consolas', monospace; font-weight: 700; letter-spacing: 0.06em; }
+    </style>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#FBFAF6"/>
+      <stop offset="100%" stop-color="#F1EEE4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="320" fill="url(#bgGrad)"/>
+
+  <!-- ╔══ LEFT: caliper icon (≈360 px wide area) ══╗ -->
+  <!-- Icon coordinate frame: x in [60, 420], center y = 160 -->
+
+  <!-- Main beam (horizontal rail) -->
+  <rect x="90"  y="155" width="280" height="10" rx="2" fill="#1E2A32"/>
+
+  <!-- Tick marks on beam (precision scale) -->
+  <g fill="#1E2A32">
+    <rect x="110" y="145" width="2" height="10"/>
+    <rect x="140" y="148" width="2" height="7"/>
+    <rect x="170" y="145" width="2" height="10"/>
+    <rect x="200" y="148" width="2" height="7"/>
+    <rect x="230" y="145" width="2" height="10"/>
+    <rect x="260" y="148" width="2" height="7"/>
+    <rect x="290" y="145" width="2" height="10"/>
+    <rect x="320" y="148" width="2" height="7"/>
+    <rect x="350" y="145" width="2" height="10"/>
+  </g>
+
+  <!-- Fixed jaw (left) -->
+  <rect x="88"  y="90" width="12" height="75" rx="2" fill="#1E2A32"/>
+  <rect x="88"  y="155" width="12" height="80" rx="2" fill="#1E2A32"/>
+  <!-- pointed inner face of fixed jaw -->
+  <polygon points="100,100 128,115 100,130" fill="#1E2A32"/>
+
+  <!-- Moving jaw (right, slid in) -->
+  <rect x="280" y="90"  width="12" height="75" rx="2" fill="#C4442D"/>
+  <rect x="280" y="155" width="12" height="80" rx="2" fill="#C4442D"/>
+  <polygon points="280,100 252,115 280,130" fill="#C4442D"/>
+
+  <!-- "Item being measured" — abstract skill token between the jaws -->
+  <g transform="translate(135, 95)">
+    <rect width="110" height="50" rx="6" fill="none" stroke="#1E2A32" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <text x="55" y="32" text-anchor="middle" class="mono" font-size="16" fill="#1E2A32">SKILL.md</text>
+  </g>
+
+  <!-- Digital readout plate (below beam) — evokes precision -->
+  <rect x="120" y="235" width="220" height="50" rx="6" fill="#1E2A32"/>
+  <text x="230" y="269" text-anchor="middle" class="readout" font-size="26" fill="#E9D48A">+0.095 ± 0.04</text>
+
+  <!-- ╔══ RIGHT: wordmark + taglines ══╗ -->
+  <!-- x ≥ 470 area -->
+
+  <text x="470" y="150" class="wordmark" font-size="104" fill="#1E2A32">Caliper</text>
+
+  <!-- EN tagline -->
+  <text x="474" y="198" class="tagline" font-size="21" fill="#3B4A52">
+    Every junction has a mathematical probe.
+  </text>
+
+  <!-- CN tagline -->
+  <text x="474" y="228" class="tag-cn" font-size="19" fill="#3B4A52">
+    每一个环节都带数学保证。
+  </text>
+
+  <!-- Pill row: key algorithms -->
+  <g transform="translate(474, 258)" font-size="13" class="mono">
+    <g>
+      <rect width="76"  height="26" rx="13" fill="#1E2A32"/>
+      <text x="38" y="18" text-anchor="middle" fill="#FBFAF6">BCa CI</text>
+    </g>
+    <g transform="translate(84, 0)">
+      <rect width="120" height="26" rx="13" fill="#1E2A32"/>
+      <text x="60" y="18" text-anchor="middle" fill="#FBFAF6">Hedged Capital CS</text>
+    </g>
+    <g transform="translate(212, 0)">
+      <rect width="110" height="26" rx="13" fill="#1E2A32"/>
+      <text x="55" y="18" text-anchor="middle" fill="#FBFAF6">TMC-Shapley</text>
+    </g>
+    <g transform="translate(330, 0)">
+      <rect width="120" height="26" rx="13" fill="#C4442D"/>
+      <text x="60" y="18" text-anchor="middle" fill="#FBFAF6">Rule-Conflict Lint</text>
+    </g>
+  </g>
+
+  <!-- subtle corner signature -->
+  <text x="1170" y="305" text-anchor="end" class="mono" font-size="11" fill="#8C8F85">v0.1.0 · MIT</text>
+</svg>

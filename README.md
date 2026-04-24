@@ -1,11 +1,8 @@
-<h1 align="center">Caliper</h1>
-
 <p align="center">
-  <strong>Algorithmically-guaranteed skill self-iteration for Claude Code.</strong>
-  <br/>
-  Every junction in the iteration loop carries a mathematical probe —
-  <br/>
-  so the system can run without human supervision and still know what it's doing.
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg">
+    <img alt="Caliper — Algorithmically-guaranteed skill self-iteration" src="assets/banner.svg" width="100%">
+  </picture>
 </p>
 
 <p align="center">
