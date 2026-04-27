@@ -11,7 +11,7 @@ From zero to your first gated optimization run in ~10 minutes.
 curl -LsSf https://astral.sh/uv/install.sh | sh   # macOS/Linux
 # or: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"   # Windows
 
-git clone https://github.com/OWNER/caliper.git
+git clone https://github.com/zhengbowenai-cmd/caliper.git
 cd caliper
 uv sync --dev
 ```

@@ -6,7 +6,7 @@
 
 **请不要**在 GitHub 上直接提 issue 汇报安全漏洞。
 
-请使用 [GitHub Private Vulnerability Reporting](https://github.com/OWNER/caliper/security/advisories/new)，
+请使用 [GitHub Private Vulnerability Reporting](https://github.com/zhengbowenai-cmd/caliper/security/advisories/new)，
 或者直接联系仓库维护者（邮箱见 `CODEOWNERS`）。
 
 我们会在 **72 小时内** 回复确认，高严重级别漏洞目标在 **14 天内**

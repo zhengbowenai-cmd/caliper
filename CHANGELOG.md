@@ -47,5 +47,5 @@ First internal MVP.
 - CLI commands: `lint`, `compare`, `iterate`.
 - 22 unit tests; end-to-end verification on POC-2 data.
 
-[Unreleased]: https://github.com/OWNER/caliper/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/OWNER/caliper/releases/tag/v0.1.0
+[Unreleased]: https://github.com/zhengbowenai-cmd/caliper/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/zhengbowenai-cmd/caliper/releases/tag/v0.1.0

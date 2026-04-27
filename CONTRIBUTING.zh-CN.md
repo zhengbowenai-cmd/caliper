@@ -20,7 +20,7 @@
 
 ```bash
 # 还没装 uv？https://docs.astral.sh/uv/
-git clone https://github.com/OWNER/caliper.git
+git clone https://github.com/zhengbowenai-cmd/caliper.git
 cd caliper
 uv sync --dev                         # 依赖 + 开发工具
 uv run pre-commit install             # 装 git hooks

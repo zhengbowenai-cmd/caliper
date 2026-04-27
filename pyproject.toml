@@ -42,10 +42,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/OWNER/caliper"
-Documentation = "https://github.com/OWNER/caliper#readme"
-Issues = "https://github.com/OWNER/caliper/issues"
-Changelog = "https://github.com/OWNER/caliper/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/zhengbowenai-cmd/caliper"
+Documentation = "https://github.com/zhengbowenai-cmd/caliper#readme"
+Issues = "https://github.com/zhengbowenai-cmd/caliper/issues"
+Changelog = "https://github.com/zhengbowenai-cmd/caliper/blob/main/CHANGELOG.md"
 
 [project.scripts]
 caliper = "caliper.cli:cli"

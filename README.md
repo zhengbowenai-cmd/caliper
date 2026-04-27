@@ -8,8 +8,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/OWNER/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/OWNER/caliper/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
-  <a href="https://github.com/OWNER/caliper/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
+  <a href="https://github.com/zhengbowenai-cmd/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/zhengbowenai-cmd/caliper/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
+  <a href="https://github.com/zhengbowenai-cmd/caliper/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-informational?style=flat-square" alt="Python 3.12+"/>
   <img src="https://img.shields.io/badge/types-pyright-forestgreen?style=flat-square" alt="Pyright"/>
   <img src="https://img.shields.io/badge/lint-ruff-orange?style=flat-square" alt="Ruff"/>
@@ -57,7 +57,7 @@ Three axioms, not negotiable:
 uv tool install caliper
 
 # or from source
-git clone https://github.com/OWNER/caliper.git
+git clone https://github.com/zhengbowenai-cmd/caliper.git
 cd caliper
 uv sync --dev
 ```

@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/OWNER/caliper/security/advisories/new
+    url: https://github.com/zhengbowenai-cmd/caliper/security/advisories/new
     about: Use GitHub's Private Vulnerability Reporting — do NOT open a public issue.
   - name: Question or discussion
-    url: https://github.com/OWNER/caliper/discussions
+    url: https://github.com/zhengbowenai-cmd/caliper/discussions
     about: For open-ended questions, design debates, or help using Caliper.

@@ -6,7 +6,7 @@
 
 Please **do not open a public GitHub issue** for security vulnerabilities.
 
-Instead, use [GitHub Private Vulnerability Reporting](https://github.com/OWNER/caliper/security/advisories/new)
+Instead, use [GitHub Private Vulnerability Reporting](https://github.com/zhengbowenai-cmd/caliper/security/advisories/new)
 or email the maintainers directly (address available in the repository
 `CODEOWNERS` file).
 

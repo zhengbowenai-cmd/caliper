@@ -20,7 +20,7 @@ mathematical rigor and verifiable claims — please help us keep both.
 
 ```bash
 # install uv if you don't have it: https://docs.astral.sh/uv/
-git clone https://github.com/OWNER/caliper.git
+git clone https://github.com/zhengbowenai-cmd/caliper.git
 cd caliper
 uv sync --dev                         # install deps + dev extras
 uv run pre-commit install             # set up git hooks
