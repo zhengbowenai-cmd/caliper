@@ -45,20 +45,80 @@ Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter
 
 ## Use Caliper from inside your agent
 
-We ship Caliper itself as [a skill](skills/caliper/SKILL.md). Any agent that respects the SKILL.md format can install it and then you just *talk to your agent* — *"is this new prompt actually better than my old one?"* — and it runs `caliper compare` for you.
+Don't want to memorize 4 CLI commands, hand-write JSONL test cases, and read JSON verdict files? Install Caliper as a skill in your agent, and **just talk to it in plain English** — your agent runs Caliper for you, reads the result, and tells you the verdict in human language.
+
+### What it feels like once installed
+
+You talk to your existing agent (Claude Code, Hermes, Cursor — anything that supports SKILL.md):
+
+> *"I just changed my review skill — is the new version actually better than the old one?"*
+
+The agent picks up on phrases like *"actually better than the old one"*, automatically runs `caliper compare`, executes the tests, reports back in plain language. **You don't run a single CLI command.**
+
+### Three real use-case scenarios
+
+| You say to your agent | What the skill makes the agent do |
+|----------------------|----------------------------|
+| **"Is the new version of my review skill better?"** | Runs `caliper compare old.md new.md` and explains the BCa CI in plain language. Recommends ship-or-skip. |
+| **"This prompt feels too long. What can I cut?"** | Runs `caliper analyze`, finds paragraphs with Shapley near zero, suggests which to delete or rewrite. |
+| **"Why does the AI keep adding checklists for trivial tasks?"** | Runs `caliper lint`, finds the "Always include checklist" + "Trivial exception" rule conflict, points to the exact lines. |
+| **"Auto-improve this prompt, but don't burn more than $7."** | Runs `caliper iterate --max-cost-cny 50 --rounds 3`, reports back the final champion + the reasoning behind the verdict. |
+
+### 30-second install (Claude Code)
+
+```bash
+# 1) Install caliper itself
+uv tool install caliper
+
+# 2) Set your LLM key (Caliper needs it to run evals)
+export DASHSCOPE_API_KEY=sk-...        # or DEEPSEEK_API_KEY, OPENAI_API_KEY...
+
+# 3) Install the skill
+mkdir -p ~/.claude/skills/caliper
+curl -L https://raw.githubusercontent.com/zhengbowenai-cmd/caliper/master/skills/caliper/SKILL.md \
+    > ~/.claude/skills/caliper/SKILL.md
+
+# 4) Restart Claude Code (or /reload)
+```
+
+Done. Now in any Claude Code conversation:
+
+```
+You:    I just edited ~/.claude/skills/qa/SKILL.md — old version backed up
+        in ./qa-old.md. Is the new one really better?
+
+Claude: (recognizes trigger phrase, invokes the skill)
+        > Let me run caliper to compare. First I'll generate ~8 QA test cases...
+        > Done.
+        >
+        > Results:
+        >   Old version mean 0.73, new version mean 0.78 (looks like +6.8%)
+        >   BCa 95% CI on diff = [-0.04, +0.14]
+        >   Hedges' g = +0.21 (small)
+        >
+        > The interval crosses zero — statistically, **this might be a real
+        > small improvement, OR it might just be sampling noise.**
+        > Recommendation: either expand to 20+ test cases for a clearer
+        > verdict, or hold off on shipping since the effect size is too
+        > small to justify the risk of regression on edge cases.
+```
+
+### Compatibility matrix
 
 | Agent / IDE | How to install | Status |
 |-------------|---------------|--------|
 | **Claude Code** | Drop into `~/.claude/skills/caliper/` | ✅ native |
-| **Hermes Agent** | `hermes skills install caliper`, or drop into `~/.hermes/skills/caliper/` | ✅ native ([agentskills.io](https://agentskills.io)) |
+| **Hermes Agent** | `hermes skills install caliper`, or `~/.hermes/skills/caliper/` | ✅ native ([agentskills.io](https://agentskills.io)) |
 | **OpenClaw** | Drop into `~/.openclaw/skills/caliper/` | ✅ native |
 | **Cursor** | Copy `cursor-rules.mdc` into `.cursor/rules/` | ✅ |
 | **Continue** (VS Code / JetBrains) | Copy into `.continue/rules/` | ✅ |
 | **Aider** | `aider --read SKILL.md` | ✅ |
 | **Codex CLI** | Append to `~/.codex/instructions.md` | manual |
-| **Any other agent** | Shell out to `caliper compare ...` directly | ✅ universal |
+| **Any other agent** | Shell out to `caliper` directly | ✅ universal |
 
-Full install snippets for each in [`skills/README.md`](skills/README.md). Caliper is a plain CLI — **any agent that can run shell commands can use it without a skill file**. The skill files just tell the agent *when* to reach for it.
+Full per-agent install snippets in [`skills/README.md`](skills/README.md).
+
+> Caliper is a plain CLI — **any agent that can run shell commands can use it without a skill file**. The skill file just teaches the agent *when* this is the right tool to reach for.
 
 ---
 

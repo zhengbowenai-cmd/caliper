@@ -45,7 +45,69 @@
 
 ## 在你的 Agent 里直接用 Caliper
 
-我们把 Caliper 自己打包成了 [一个 skill](skills/caliper/SKILL.md)——任何支持 SKILL.md 格式的 agent 装上之后，可以直接对它说"测一下这个新 prompt 比旧版好不好"，它会自动调 `caliper` CLI 给你结果。
+不想记 4 个 CLI 命令、不想手写 JSONL、不想读 JSON 判决文件？把 Caliper 装成你 agent 的一个 skill，**直接用大白话和 agent 说话就行**——agent 替你跑 Caliper、读结果、用人话告诉你结论。
+
+### 装完之后是什么感觉
+
+你直接对你正在用的 agent（Claude Code / Hermes / Cursor / 任意支持 SKILL.md 的）说：
+
+> *"我刚改了那个 review skill，新版真的比旧版好吗？"*
+
+Agent 立刻反应：
+- 听到"真的比旧版好吗"这种触发词
+- 自动调 `caliper compare 老.md 新.md`
+- 跑测试 + 算配对置信区间
+- 用人话告诉你结果
+
+不用记命令、不用手动操作、不用读 JSON。
+
+### 三个真实使用场景
+
+| 你对 agent 说 | Agent 用 Caliper 替你做的事 |
+|--------------|--------------------------|
+| **"我改了 review skill，新版更好吗？"** | 调 `caliper compare 老.md 新.md`，告诉你 BCa 置信区间。是真改进就建议上线，是噪声就劝你别上 |
+| **"这个 prompt 太长了，能砍哪段？"** | 调 `caliper analyze`，找出 Shapley 贡献接近 0 或负的段落，建议你删除或改写 |
+| **"为啥 AI 老在简单任务里加验证清单？"** | 调 `caliper lint`，发现"永远要带清单"+"琐碎任务跳过"两条规则在打架，告诉你冲突在 prompt 哪一行 |
+| **"自动改进这个 prompt，但别花超过 ¥50"** | 调 `caliper iterate --max-cost-cny 50 --rounds 3`，跑完把最终冠军和判决理由报给你 |
+
+### 30 秒装好（Claude Code 示例）
+
+```bash
+# 1) 装 caliper 本体
+uv tool install caliper
+
+# 2) 配 LLM key（Caliper 跑评估需要）
+export DASHSCOPE_API_KEY=sk-...     # 或 DEEPSEEK / OPENAI
+
+# 3) 装 skill
+mkdir -p ~/.claude/skills/caliper
+curl -L https://raw.githubusercontent.com/zhengbowenai-cmd/caliper/master/skills/caliper/SKILL.md \
+    > ~/.claude/skills/caliper/SKILL.md
+
+# 4) 重启 Claude Code（或 /reload）
+```
+
+完事。打开 Claude Code 直接说话：
+
+```
+你：    我刚改完了 ~/.claude/skills/qa/SKILL.md，旧版备份在 ./qa-old.md。
+        新版真的更好吗？
+Claude： （识别到触发词，自动调 caliper）
+        > 让我用 caliper 比一下。我先帮你写 8 条 QA 测试用例...
+        > 跑完了。
+        > 
+        > 结果：
+        >   旧版均值 0.73，新版均值 0.78（看似 +6.8%）
+        >   BCa 95% 置信区间 [-0.04, +0.14]
+        >   Hedges' g = +0.21（small）
+        > 
+        > 区间跨过 0 —— 统计上看，**这次改动可能是真的好一点点，
+        > 也可能就是测试用例的随机波动**。
+        > 建议：要么扩到 20+ 条测试用例再测，要么这次先不上，
+        > 因为效应量太小不值得引入风险。
+```
+
+### 各 agent / IDE 兼容情况
 
 | Agent / IDE | 安装方法 | 状态 |
 |-------------|---------|------|
@@ -58,7 +120,9 @@
 | **Codex CLI** | 拷到 `~/.codex/instructions.md` | 手动 |
 | **其他任意 agent** | 直接 shell 调用 `caliper compare ...` 即可 | ✅ 通用 |
 
-完整安装命令见 [`skills/README.md`](skills/README.md)。Caliper 本身是一个 CLI 工具——**任何能调 shell 的 agent 都能直接用它，不一定需要 skill 文件**。skill 文件只是为了让 agent 知道"啥时候该用 Caliper"。
+完整逐 agent 安装命令见 [`skills/README.md`](skills/README.md)。
+
+> Caliper 本身是 CLI——任何能调 shell 的 agent 都能直接用它，**skill 文件只是教 agent "看到这种问题就该用 Caliper"**。
 
 ---
 
