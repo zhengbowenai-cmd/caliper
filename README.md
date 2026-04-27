@@ -43,35 +43,42 @@ Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter
 > Re-ran on a fresh batch we'd never seen. **−8%.** That +17% was pure noise. Caliper's paired CI:
 > `[-0.2, +0.5]` — interval crosses zero, *"statistically no difference."* Things your eye can't tell apart, Caliper can.
 
-## Use Caliper from inside your agent
+---
 
-Don't want to memorize 4 CLI commands, hand-write JSONL test cases, and read JSON verdict files? Install Caliper as a skill in your agent, and **just talk to it in plain English** — your agent runs Caliper for you, reads the result, and tells you the verdict in human language.
+# 🔌 Install as an Agent Skill — Just Talk, Don't Type Commands
 
-### What it feels like once installed
+Caliper has **two ways to use it**:
+
+1. **As a CLI directly** — see [Install](#install) below. Four commands, hand-written JSONL test cases, JSON verdict files you read yourself.
+2. **As a skill installed in your agent** — no commands, no JSONL, no JSON parsing. **Just talk to your agent in plain English** and it runs Caliper in the background, then summarizes the verdict for you.
+
+This section covers option 2.
+
+## What it feels like once installed
 
 You talk to your existing agent (Claude Code, Hermes, Cursor — anything that supports SKILL.md):
 
 > *"I just changed my review skill — is the new version actually better than the old one?"*
 
-The agent picks up on phrases like *"actually better than the old one"*, automatically runs `caliper compare`, executes the tests, reports back in plain language. **You don't run a single CLI command.**
+The agent picks up on phrases like *"actually better than the old one"*, automatically runs `caliper compare`, executes the tests, and reports back in plain English. **You don't run a single CLI command.**
 
-### Three real use-case scenarios
+## Four real use-case scenarios
 
 | You say to your agent | What the skill makes the agent do |
 |----------------------|----------------------------|
-| **"Is the new version of my review skill better?"** | Runs `caliper compare old.md new.md` and explains the BCa CI in plain language. Recommends ship-or-skip. |
-| **"This prompt feels too long. What can I cut?"** | Runs `caliper analyze`, finds paragraphs with Shapley near zero, suggests which to delete or rewrite. |
-| **"Why does the AI keep adding checklists for trivial tasks?"** | Runs `caliper lint`, finds the "Always include checklist" + "Trivial exception" rule conflict, points to the exact lines. |
-| **"Auto-improve this prompt, but don't burn more than $7."** | Runs `caliper iterate --max-cost-cny 50 --rounds 3`, reports back the final champion + the reasoning behind the verdict. |
+| **"Is the new version of my review skill better?"** | Runs `caliper compare old.md new.md`, explains the BCa CI in plain language, recommends ship-or-skip |
+| **"This prompt feels too long — what can I cut?"** | Runs `caliper analyze`, finds paragraphs with Shapley near zero, suggests which to delete or rewrite |
+| **"Why does the AI keep adding checklists for trivial tasks?"** | Runs `caliper lint`, finds the "Always include checklist" + "Trivial exception" rule conflict, points to the exact lines |
+| **"Auto-improve this prompt, but don't burn more than $7"** | Runs `caliper iterate --max-cost-cny 50 --rounds 3`, reports back the final champion + the reasoning behind the verdict |
 
-### 30-second install (Claude Code)
+## 30-second install (Claude Code example)
 
 ```bash
 # 1) Install caliper itself
 uv tool install caliper
 
 # 2) Set your LLM key (Caliper needs it to run evals)
-export DASHSCOPE_API_KEY=sk-...        # or DEEPSEEK_API_KEY, OPENAI_API_KEY...
+export DASHSCOPE_API_KEY=sk-...        # or DEEPSEEK_API_KEY / OPENAI_API_KEY
 
 # 3) Install the skill
 mkdir -p ~/.claude/skills/caliper
@@ -99,11 +106,11 @@ Claude: (recognizes trigger phrase, invokes the skill)
         > The interval crosses zero — statistically, **this might be a real
         > small improvement, OR it might just be sampling noise.**
         > Recommendation: either expand to 20+ test cases for a clearer
-        > verdict, or hold off on shipping since the effect size is too
-        > small to justify the risk of regression on edge cases.
+        > verdict, or hold off on shipping — the effect size is too small
+        > to justify the risk of regressions on edge cases.
 ```
 
-### Compatibility matrix
+## Compatibility matrix
 
 | Agent / IDE | How to install | Status |
 |-------------|---------------|--------|
@@ -118,7 +125,9 @@ Claude: (recognizes trigger phrase, invokes the skill)
 
 Full per-agent install snippets in [`skills/README.md`](skills/README.md).
 
-> Caliper is a plain CLI — **any agent that can run shell commands can use it without a skill file**. The skill file just teaches the agent *when* this is the right tool to reach for.
+> Caliper is a plain CLI — **any agent that can run shell commands can use it without a skill file**. The skill file just teaches the agent *when* to reach for it.
+
+---
 
 ---
 
