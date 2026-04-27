@@ -1,7 +1,7 @@
 [project]
 name = "caliper"
 version = "0.1.0"
-description = "你改完 AI 的 prompt 到底有没有用？Caliper 用统计告诉你答案，不靠感觉 · Did your AI prompt change actually help? Caliper tells you with statistics — not vibes."
+description = "你这版 prompt / skill 真比上一版好吗？Caliper 让你不用再猜 · Is this version of your prompt or skill actually better than the last? Caliper takes the guesswork out."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
