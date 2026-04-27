@@ -8,8 +8,8 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/zhengbowenai-cmd/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/zhengbowenai-cmd/caliper/ci.yml?branch=main&label=CI&style=flat-square" alt="CI"/></a>
-  <a href="https://github.com/zhengbowenai-cmd/caliper/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
+  <a href="https://github.com/zhengbowenai-cmd/caliper/actions"><img src="https://img.shields.io/github/actions/workflow/status/zhengbowenai-cmd/caliper/ci.yml?branch=master&label=CI&style=flat-square" alt="CI"/></a>
+  <a href="https://github.com/zhengbowenai-cmd/caliper/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="License"/></a>
   <img src="https://img.shields.io/badge/python-3.12%20%7C%203.13-informational?style=flat-square" alt="Python 3.12+"/>
   <img src="https://img.shields.io/badge/types-pyright-forestgreen?style=flat-square" alt="Pyright"/>
   <img src="https://img.shields.io/badge/lint-ruff-orange?style=flat-square" alt="Ruff"/>
@@ -26,207 +26,196 @@
 
 ---
 
-## Why does Caliper exist?
+## What is Caliper?
 
-Two rounds of POC on the Claude Code skill-iteration loop uncovered three recurring failure modes:
+You tweaked a `SKILL.md` to make Claude Code work better.
 
-1. **Val-set overfitting.** A `+17%` gain on the validation slice turned into `-7.9%` on held-out domains.
-2. **LLM reflection is noise, not gradient.** Attribution accuracy < 10% (AgenTracer / MAST 2025).
-3. **Internal rule conflicts.** GEPA produced a skill whose "Always include a checklist" rule silently overrode a "trivial exception" rule, tanking every simple task.
+**How do you know it actually got better?**
 
-None of the existing gates caught any of these. Caliper is the algorithmic armor that does.
+Most people eyeball a few outputs, feel pretty good, and ship. That's how we got here:
+
+> A skill scored `+17%` on a validation set. Felt great. We shipped it.
+> On a holdout set it scored `-7.9%`.
+> The "improvement" was noise — and we'd never have caught it without statistics.
+
+**Caliper measures, instead of guessing.** It's a small Python tool with one job: take your skill, run it through test cases, and tell you with mathematical confidence whether your change is real.
 
 ---
 
-## Design principles
+## What it does, in one screen
 
-Three axioms, not negotiable:
+```bash
+$ caliper compare seed.md challenger.md --eval my_cases.jsonl
+```
+```
+                        per-case
++----------------------------+------+------+---------+
+| id                         | seed | chal |    diff |
++----------------------------+------+------+---------+
+| 01-ambiguity-cache         | 1.00 | 1.00 |   +0.00 |
+| 02-over-engineering-config | 1.00 | 1.00 |   +0.00 |
+| 03-defensive-sum           | 1.00 | 1.00 |   +0.00 |
+| 04-surgical-bug            | 0.80 | 0.95 |   +0.15 |
+| 05-trivial-rename          | 0.90 | 0.40 |   −0.50 |  ← regression!
+| 06-pushback-singleton      | 1.00 | 1.00 |   +0.00 |
+| 07-trivial-typo            | 0.90 | 0.30 |   −0.60 |  ← regression!
+| 08-verifiable-perf         | 1.00 | 1.00 |   +0.00 |
++----------------------------+------+------+---------+
 
-| # | Principle | Implication |
-|---|-----------|-------------|
-| 1 | **Gradients come from algorithms, not LLMs.** | Reflection is a writer, not an attributor. Use Counterfactual Replay + TMC-Shapley instead. |
-| 2 | **Every decision carries mathematical validity.** | No point-estimate promotions. BCa bootstrap, Hedges' g, Hedged-Capital CS, all reported. |
-| 3 | **External anchors are irreplaceable.** | No pure-algorithmic system escapes the self-proof trap. Caliper integrates human-in-the-loop gates and real user signals. |
+                statistical verdict
++----------------+------------------------------+
+| n              | 8                            |
+| seed mean      | 0.825                        |
+| challenger     | 0.700                        |
+| mean diff      | −0.125                       |
+| 95% BCa CI     | [−0.275, +0.000]             |
+| Hedges' g      | −0.42  (small)               |
+| linter (chal)  | 6 HIGH findings  (BLOCK)     |
++----------------+------------------------------+
+
+→ DO NOT PROMOTE
+   - linter found a rule conflict ("Always checklist" + "Trivial Exception")
+   - statistical CI does not exclude zero on 8 samples
+```
+
+You wouldn't have shipped this. Caliper made the call before you even rolled it out.
+
+---
+
+## Three things you can do today
+
+### 🔍 `caliper lint <SKILL.md>`
+Static check. Catches the bug where *"Always include a verification checklist"* silently contradicts *"skip ceremony for trivial tasks"* — a real failure mode that tanks every simple request. **Multilingual: works on English and Chinese skills.**
+
+### 📏 `caliper compare seed.md challenger.md --eval cases.jsonl`
+Runs both versions on your test cases, gives you a paired bootstrap confidence interval on the difference. If the interval crosses zero, you didn't really improve anything — it was noise.
+
+### 🔄 `caliper iterate seed.md --eval cases.jsonl --rounds 3 --max-cost-cny 50`
+Full propose → lint → eval → decide loop. Hard budget cap means it can't burn through your API key trying to "improve" a skill that's already good enough.
+
+There's also a fourth, **`caliper analyze`**, that does per-section attribution — tells you *which paragraphs* of your SKILL.md are pulling weight and which are dead weight.
 
 ---
 
 ## Install
 
 ```bash
-# with uv (recommended — fast, no system Python pollution)
-uv tool install caliper
-
-# or from source
+# Prerequisite: uv (https://docs.astral.sh/uv/)
 git clone https://github.com/zhengbowenai-cmd/caliper.git
 cd caliper
 uv sync --dev
 ```
 
-Runtime requires an OpenAI-compatible LLM API. Tested against Alibaba DashScope (Qwen), DeepSeek, OpenAI, and OpenRouter.
+Caliper talks to any **OpenAI-compatible LLM** — DashScope (Qwen), DeepSeek, OpenAI, OpenRouter, local vLLM, all work. Set one in `.env`:
 
 ```bash
-# .env
 DASHSCOPE_API_KEY=sk-...
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
----
+> **Free, fully open source (MIT).** Caliper itself never charges you anything. The only money involved is what you pay your LLM provider for inference — and Caliper has a hard `--max-cost-cny` cap so you can't be surprised.
 
-## Quick start
-
-Four CLI commands, all with rich terminal output and JSON-persistent run directories:
-
-```bash
-# 1. Static lint — catches the POC H04 "always checklist + trivial exception" bug,
-#    description length overrun, invalid YAML, rule conflicts. Multilingual (EN + 中文).
-caliper lint path/to/SKILL.md
-
-# 2. Per-section attribution — Counterfactual ablation + TMC-Shapley.
-#    Tells you which sections of your skill are actually pulling their weight.
-caliper analyze skill.md --eval cases.jsonl
-
-# 3. Head-to-head — paired BCa bootstrap + Hedges' g + peek-safe CS + linter.
-caliper compare seed.md challenger.md --eval cases.jsonl --run-dir runs/x
-
-# 4. Full optimization loop — propose → lint → eval → decide, with hard budget caps.
-caliper iterate seed.md --eval cases.jsonl --rounds 3 \
-    --run-dir runs/my-run \
-    --judge-models qwen3.6-plus,qwen-max,qwen-plus \
-    --max-cost-cny 50 \
-    --cs-margin 0.02
-```
-
-### Eval file format (`*.jsonl`)
-
-```json
-{"id": "case-01", "input": "user prompt here", "principle": "what's being tested", "rubric": "0-10 rubric for the LLM judge"}
-```
-
-### Run directory layout
-
-```
-runs/my-run/
-  config.json               frozen OptimizerConfig
-  seed_skill.md             starting SKILL.md
-  champion.md               current champion (updated on accept)
-  rounds/
-    round_000/
-      candidate.md          LLM rewrite
-      lint.json             LintFinding JSON
-      skill_runs.jsonl      one SkillRun per eval case (with judge votes)
-      verdict.json          BCa CI + Hedges g + CS CI + decision + reason
-    round_001/ ...
-  final.json                summary + budget + LLM usage + cache stats
-```
+Full setup walkthrough: [`docs/quickstart.md`](docs/quickstart.md).
 
 ---
 
-## Architecture
+## Why does this matter?
 
-Eight-layer design; the MVP ships four. See [`docs/architecture.md`](docs/architecture.md) for the full spec and [`docs/algorithms.md`](docs/algorithms.md) for references.
+Three failure modes show up over and over when people iterate on skills, and **none of the existing tools catch them**:
+
+1. **Validation overfitting.** A `+17%` gain on val turned into `-7.9%` on holdout in our POC. Without a confidence interval you'd never have noticed.
+2. **LLM reflection is noise.** When you ask an LLM "what went wrong?", attribution accuracy is under 10% (AgenTracer / MAST 2025). Most "improvements" guided by reflection are random walks.
+3. **Internal rule conflicts.** A skill saying *"always include a checklist"* AND *"skip ceremony for trivial tasks"* — both rules can't be right. The "always" wins, and trivial tasks get crushed.
+
+Caliper is the algorithmic armor that closes all three. It doesn't trust point estimates, doesn't trust LLM self-attribution, and doesn't trust rules that contradict each other.
+
+---
+
+## Design principles
+
+| # | Principle | Why |
+|---|-----------|-----|
+| 1 | **Gradients come from algorithms, not LLMs.** | Reflection is a writer, not an attributor. We use Counterfactual Replay + TMC-Shapley instead. |
+| 2 | **Every decision carries mathematical validity.** | No point-estimate promotions. BCa bootstrap, Hedges' g, Hedged-Capital CS — every verdict has a number you can audit. |
+| 3 | **External anchors are irreplaceable.** | No purely automated system escapes the self-proof trap. Caliper surfaces — never bypasses — human sign-off. |
+
+---
+
+## Architecture (for the curious)
+
+Caliper is eight layers stacked into one CLI. The MVP ships five.
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
-│ GROUND TRUTH     user signals · pairwise arena · external bench    │
-│                       (V2 — external anchors)                      │
+│ GROUND TRUTH       user signals · pairwise arena · external bench  │ V2
 ├────────────────────────────────────────────────────────────────────┤
-│ STATISTICAL      BCa · Hedges' g · TOST · Hedged-Capital CS ·      │
-│ SAFETY           Thresholdout · Track-and-Stop · BOCPD             │
+│ STATISTICAL SAFETY BCa · Hedges' g · TOST · Hedged-Capital CS ·    │
+│                    Thresholdout · Track-and-Stop · BOCPD           │
 ├────────────────────────────────────────────────────────────────────┤
-│ GRADIENT         Counterfactual Replay · TMC-Shapley · Oracle      │
-│ SOURCE           Battery  (replaces LLM self-reflection)           │
+│ GRADIENT SOURCE    Counterfactual Replay · TMC-Shapley · Oracle    │
+│                    Battery  (replaces LLM self-reflection)         │
 ├────────────────────────────────────────────────────────────────────┤
-│ EVALUATOR        Ensemble judges · Krippendorff α · IRT · DML      │
+│ EVALUATOR          Ensemble judges · Krippendorff α · IRT · DML    │
 ├────────────────────────────────────────────────────────────────────┤
-│ PROPOSER         LLM rewriter · Rule-Conflict Linter · Lagrangian  │
+│ PROPOSER           LLM rewriter · Rule-Conflict Linter · Lagrangian│
 ├────────────────────────────────────────────────────────────────────┤
-│ ARCHIVE          MAP-Elites · Round-0 anchors · Pareto admission   │
+│ ARCHIVE            MAP-Elites · Round-0 anchors · Pareto admission │ V2
 ├────────────────────────────────────────────────────────────────────┤
-│ GOVERNANCE       Capability Manifest · Cost Budget · Privilege     │
+│ GOVERNANCE         Capability Manifest · Cost Budget · Privilege   │
 ├────────────────────────────────────────────────────────────────────┤
-│ RUNTIME          Claude Code · Hermes skill-manager · Langfuse ·   │
-│                  Inspect AI · GEPA (replaceable adapters)          │
+│ RUNTIME            Claude Code · Hermes skill-manager · Langfuse · │
+│                    Inspect AI · GEPA  (replaceable adapters)       │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-### Module map (what ships today)
-
-| Path | What it does | Key refs |
-|------|--------------|----------|
-| `caliper.safety.bootstrap` | Paired BCa bootstrap · Hedges' g · TOST (both t and bootstrap) · power | Efron 1987 · Hedges 1981 · Schuirmann 1987 |
-| `caliper.safety.confseq` | Hedged-Capital Confidence Sequence — peek-safe intervals | Waudby-Smith & Ramdas 2024 JRSSB |
-| `caliper.gradient.oracle` | Programmatic pass/fail checks | — |
-| `caliper.gradient.replay` | Counterfactual section ablation | Meng et al. 2022 (ROME) |
-| `caliper.gradient.shapley` | TMC Monte-Carlo Shapley over sections | Castro et al. 2009 · Ghorbani-Zou 2019 |
-| `caliper.evaluator.ensemble` | Multi-family ensemble · Krippendorff α · judge caching | Coste et al. 2024 ICLR · Krippendorff 2011 |
-| `caliper.proposer.linter` | Rule-Conflict Linter (EN + 中文) | POC-2 H04 |
-| `caliper.proposer.lagrangian` | Length constraint with dual ascent | Stooke et al. 2020 |
-| `caliper.proposer.rewriter` | LLM skill rewriter | — |
-| `caliper.governance.budget` | Token / wallclock / cost / rounds budget | — |
-| `caliper.runtime.llm` | OpenAI-compatible client with retry + token counting | — |
-| `caliper.optimizer` | Orchestrator wiring every gate | — |
-| `caliper.cli` | `caliper lint / analyze / compare / iterate` | — |
-| `caliper.persistence` | JSON run-dir layout · SkillRun serialization | — |
-| `caliper.schemas` | `SkillRun`, `CIResult`, `Decision`, `EffectSize` | — |
+Each layer's algorithm cites a peer-reviewed source. See [`docs/algorithms.md`](docs/algorithms.md) for every reference, [`docs/architecture.md`](docs/architecture.md) for the full spec.
 
 ---
 
-## Demo: replay a known-bad decision
+## What's not in scope
+
+- Fine-tuning model weights. Caliper operates on **skill text only**.
+- Replacing your LLM. Bring any OpenAI-compatible endpoint.
+- Telling you what to write. Caliper measures; you decide.
+
+---
+
+## Demo: replay a known-bad decision on real data
 
 ```bash
 uv run python examples/karpathy-v2/demo.py
 ```
 
-Running the demo against real POC-2 data produces:
+Real POC-2 data, four lines of verdict:
 
 ```
-1. BCa 95% CI on the "+17%" claim: [-0.175, +0.000]   → not significant at n=8
-2. Required n for 80% power at d=0.3: ~88             → POC had n=8 (~15% power)
-3. Peek-safe CS: wins? = False at every n ≤ 8         → promotion would have been blocked
-4. Linter on best.md: 6 HIGH-severity findings, incl. the POC H04 pattern
+1. BCa 95% CI on the "+17%" claim:    [-0.175, +0.000]    →  not significant at n=8
+2. Required n for 80% power at d=0.3: ~88                 →  POC had n=8 (~15% power)
+3. Peek-safe CS: "wins?" = False at every n ≤ 8           →  promotion would have been blocked
+4. Linter on best.md:  6 HIGH findings, incl. POC-2 H04 pattern
 ```
 
-Three independent gates, each sufficient to stop the wrong promotion.
+Three independent gates, each sufficient to reverse the wrong promotion.
 
 ---
 
 ## Contributing
 
-We follow modern Python packaging and code-quality standards. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+We follow modern Python standards. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-- Formatter & linter: [`ruff`](https://docs.astral.sh/ruff/)
-- Types: [`pyright`](https://github.com/microsoft/pyright) (strict standard mode)
-- Tests: `pytest` (tests in `tests/`, fixtures in `conftest.py`)
-- Pre-commit: `pre-commit install` then `pre-commit run --all-files`
-- CI: GitHub Actions matrix (Python 3.12 · 3.13 on Ubuntu, macOS, Windows)
-
-Run the full dev loop:
-
-```bash
-uv sync --dev
-uv run ruff check .
-uv run ruff format --check .
-uv run pyright
-uv run pytest --cov=caliper
-```
-
----
-
-## Security
-
-If you discover a security vulnerability, please read [`SECURITY.md`](SECURITY.md) — do **not** open a public issue.
+`ruff` (format + lint) · `pyright` (types) · `pytest` (46/46 passing) · `pre-commit` · `gitleaks` · CodeQL · CI matrix on Python 3.12 / 3.13 × Ubuntu / macOS / Windows.
 
 ---
 
 ## Acknowledgements
 
-- [anthropics/skills](https://github.com/anthropics/skills) — the SKILL.md format and `skill-creator` prior art
-- [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent) — `skill_manager_tool.py` design inspiration
-- [gepa-ai/gepa](https://github.com/gepa-ai/gepa) — prompt-evolution baseline
-- [UKGovernmentBEIS/inspect_ai](https://github.com/UKGovernmentBEIS/inspect_ai) — evaluation framework conventions
+- [`anthropics/skills`](https://github.com/anthropics/skills) — SKILL.md format and `skill-creator` prior art
+- [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent) — `skill_manager_tool.py` design inspiration
+- [`gepa-ai/gepa`](https://github.com/gepa-ai/gepa) — prompt-evolution baseline
+- [`UKGovernmentBEIS/inspect_ai`](https://github.com/UKGovernmentBEIS/inspect_ai) — evaluation framework conventions
 
 ---
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT — fully free, forever. See [`LICENSE`](LICENSE).
