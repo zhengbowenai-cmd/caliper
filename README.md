@@ -28,21 +28,50 @@
 
 ## What is Caliper?
 
-You tweaked a `SKILL.md` to make Claude Code work better.
+In one line: **you changed how the AI behaves — Caliper tells you whether the change actually helped.**
 
-**How do you know it actually got better?**
+### A scenario you've probably been in
 
-Most people eyeball a few outputs, feel pretty good, and ship. That's how we got here:
+You're using Claude Code (or any LLM agent). It sometimes touches code it shouldn't, sometimes makes simple tasks complicated. So you wrote a behavior file (a `SKILL.md`) telling it how to behave better. Everyone does this.
 
-> A skill scored `+17%` on a validation set. Felt great. We shipped it.
-> On a holdout set it scored `-7.9%`.
-> The "improvement" was noise — and we'd never have caught it without statistics.
+After your edit, **how do you know your behavior file actually made it better?**
 
-**Caliper measures, instead of guessing.** It's a small Python tool with one job: take your skill, run it through test cases, and tell you with mathematical confidence whether your change is real.
+Eyeball a few outputs? Feels about the same? Or is it secretly worse and you can't tell?
+
+We learned the hard way:
+
+> A change scored **+17%** on the validation set. Felt great. Ready to ship.
+> Re-ran on real-world cases — it scored **−8%**.
+> The "improvement" was pure random noise — invisible to the eye.
+
+### What Caliper does for you
+
+One job: **take your old version vs your new version, run them through tests, and give a clear verdict — *ship it* or *don't*.**
+
+Every verdict tells you:
+- ✅ which test cases got better, ❌ which got worse
+- whether the difference is real or just randomness
+- **which paragraphs of your behavior file are helping, and which are dragging it down**
+
+Unlike "review a few examples by eye," Caliper doesn't sleep, every conclusion is auditable, and every verdict comes with a number you can check.
+
+### Four things it can do
+
+| Command | What it does for you |
+|---------|---------------------|
+| 🔍 `caliper lint <file>` | **Static check on your behavior file** — catches the bug where *"Always include a checklist"* and *"skip ceremony for trivial tasks"* silently contradict each other. AI-written behavior files step on this trap constantly. **Works for English and Chinese.** |
+| 📏 `caliper compare old.md new.md` | **Old version vs new, head to head** — tells you whether your "+17% improvement" is real or just looked good on a small sample |
+| 🔄 `caliper iterate` | **Full automatic loop** — let the AI propose improvements → lint for conflicts → run tests → only accept if statistics pass. Hard cost ceiling means it **can't burn through your API budget** |
+| 🔬 `caliper analyze` | **Section-level autopsy** — slices your behavior file paragraph by paragraph and tells you **which paragraphs help and which hurt** |
+
+### Two guarantees that protect you
+
+- **Free, fully open source forever** (MIT). Caliper itself charges you nothing.
+- **Cannot overspend.** Your LLM provider charges per token — Caliper can't change that — but a built-in `--max-cost-cny 50`-style hard cap means it stops the moment you hit your budget. **No surprise 4 AM bills.**
 
 ---
 
-## What it does, in one screen
+## See it in action
 
 ```bash
 $ caliper compare seed.md challenger.md --eval my_cases.jsonl
@@ -79,21 +108,6 @@ $ caliper compare seed.md challenger.md --eval my_cases.jsonl
 ```
 
 You wouldn't have shipped this. Caliper made the call before you even rolled it out.
-
----
-
-## Three things you can do today
-
-### 🔍 `caliper lint <SKILL.md>`
-Static check. Catches the bug where *"Always include a verification checklist"* silently contradicts *"skip ceremony for trivial tasks"* — a real failure mode that tanks every simple request. **Multilingual: works on English and Chinese skills.**
-
-### 📏 `caliper compare seed.md challenger.md --eval cases.jsonl`
-Runs both versions on your test cases, gives you a paired bootstrap confidence interval on the difference. If the interval crosses zero, you didn't really improve anything — it was noise.
-
-### 🔄 `caliper iterate seed.md --eval cases.jsonl --rounds 3 --max-cost-cny 50`
-Full propose → lint → eval → decide loop. Hard budget cap means it can't burn through your API key trying to "improve" a skill that's already good enough.
-
-There's also a fourth, **`caliper analyze`**, that does per-section attribution — tells you *which paragraphs* of your SKILL.md are pulling weight and which are dead weight.
 
 ---
 
