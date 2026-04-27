@@ -26,48 +26,58 @@
 
 ---
 
-## What is Caliper?
+## What problem does Caliper solve?
 
-In one line: **you changed how the AI behaves — Caliper tells you whether the change actually helped.**
+Have you ever written a prompt for an AI? A `SKILL.md` for Claude Code? A system prompt for ChatGPT? An instruction for an agent?
 
-### A scenario you've probably been in
+**The thing that drives you crazy: did my latest change actually help?**
 
-You're using Claude Code (or any LLM agent). It sometimes touches code it shouldn't, sometimes makes simple tasks complicated. So you wrote a behavior file (a `SKILL.md`) telling it how to behave better. Everyone does this.
+- Coworker asks *"is the new prompt better?"* — all you've got is *"I think so."*
+- You spent the evening trying 20 variations, burned $30 of API credits, can't tell which actually worked.
+- You fix one case, and 5 cases that used to work are now broken.
+- The model upgrades, and your carefully-tuned prompt suddenly doesn't behave the same.
+- The new version *"looks fine"* on 5 examples — then real users complain harder than before.
 
-After your edit, **how do you know your behavior file actually made it better?**
+**It's all the same root cause: you have no objective signal.**
 
-Eyeball a few outputs? Feels about the same? Or is it secretly worse and you can't tell?
+Eyeballing 3 examples and feeling "okay" tells you almost nothing about case 30. AI behavior quality isn't something the eye can count.
 
-We learned the hard way:
+**Caliper gives you that signal.**
 
-> A change scored **+17%** on the validation set. Felt great. Ready to ship.
-> Re-ran on real-world cases — it scored **−8%**.
-> The "improvement" was pure random noise — invisible to the eye.
+## How you actually use it
 
-### What Caliper does for you
+Think of Caliper as **unit tests for your prompts and skills.**
 
-One job: **take your old version vs your new version, run them through tests, and give a clear verdict — *ship it* or *don't*.**
+Feed it two versions (old and new) + a batch of real test cases, and it tells you three things:
 
-Every verdict tells you:
-- ✅ which test cases got better, ❌ which got worse
-- whether the difference is real or just randomness
-- **which paragraphs of your behavior file are helping, and which are dragging it down**
+1. Whether the new version is **really** better, or only *looks* better.
+2. Which cases improved, which got worse.
+3. **Which paragraphs of your prompt are pulling weight**, and which are dead weight.
 
-Unlike "review a few examples by eye," Caliper doesn't sleep, every conclusion is auditable, and every verdict comes with a number you can check.
+### Four commands
 
-### Four things it can do
+| Command | What it does |
+|---------|--------------|
+| 🔍 **`caliper lint`** | Static scan — finds contradictory rules in your prompt. Things like *"always include a checklist"* + *"skip ceremony for trivial tasks"* — both rules at once and the AI loses its mind. **Works on Chinese prompts too.** |
+| 📏 **`caliper compare`** | Old version vs new, head-to-head, with a **confidence-interval verdict**: *"this is real"* or *"this is noise."* |
+| 🔄 **`caliper iterate`** | Full auto loop — the AI proposes changes → check for conflicts → run tests → only accept if statistics pass. **Hard cost cap** so it can't blow through your budget. |
+| 🔬 **`caliper analyze`** | Slices your prompt paragraph by paragraph, tells you which paragraphs help and which hurt. |
 
-| Command | What it does for you |
-|---------|---------------------|
-| 🔍 `caliper lint <file>` | **Static check on your behavior file** — catches the bug where *"Always include a checklist"* and *"skip ceremony for trivial tasks"* silently contradict each other. AI-written behavior files step on this trap constantly. **Works for English and Chinese.** |
-| 📏 `caliper compare old.md new.md` | **Old version vs new, head to head** — tells you whether your "+17% improvement" is real or just looked good on a small sample |
-| 🔄 `caliper iterate` | **Full automatic loop** — let the AI propose improvements → lint for conflicts → run tests → only accept if statistics pass. Hard cost ceiling means it **can't burn through your API budget** |
-| 🔬 `caliper analyze` | **Section-level autopsy** — slices your behavior file paragraph by paragraph and tells you **which paragraphs help and which hurt** |
+### Why do I need this? Can't I just look at the outputs?
 
-### Two guarantees that protect you
+Here's a real one we got burned on:
 
-- **Free, fully open source forever** (MIT). Caliper itself charges you nothing.
-- **Cannot overspend.** Your LLM provider charges per token — Caliper can't change that — but a built-in `--max-cost-cny 50`-style hard cap means it stops the moment you hit your budget. **No surprise 4 AM bills.**
+> Tweaked a prompt. Ran it against 20 cases. **It scored +17% over the old one.** Felt amazing. Time to ship.
+> Re-ran on a fresh batch we'd never seen — **it scored −8%.**
+
+That +17% was **pure noise**. With 20 cases you can't tell if a difference is real. Caliper's paired confidence interval is `[-0.2, +0.5]` — that interval crosses zero, which means *"could be better, could be worse, you have no actual signal."*
+
+Things your eye can't tell apart, Caliper can.
+
+### Two things you don't have to worry about
+
+- **Free and open source forever** (MIT). Caliper itself charges you nothing.
+- **Cannot run up surprise bills.** Your LLM provider charges per token — Caliper can't change that — but a built-in `--max-cost-cny 50`-style hard cap stops the run the moment you hit your budget. **No 4 AM "what happened" emails.**
 
 ---
 
