@@ -1,7 +1,7 @@
 [project]
 name = "caliper"
 version = "0.1.0"
-description = "Algorithmically-guaranteed skill self-iteration for Claude Code — every junction has a mathematical probe."
+description = "你改完 AI 的 prompt 到底有没有用？Caliper 用统计告诉你答案，不靠感觉 · Did your AI prompt change actually help? Caliper tells you with statistics — not vibes."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
