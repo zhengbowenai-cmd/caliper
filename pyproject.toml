@@ -1,7 +1,7 @@
 [project]
 name = "caliper"
 version = "0.1.0"
-description = "调完 prompt 都说\"感觉好了\"。但新版真好过旧版吗？Caliper 告诉你 · Everyone says \"feels better\" after tweaking a prompt. Caliper tells you if v2 really beats v1."
+description = "让 prompt 从\"感觉好了\"变成\"真好了\" · Where \"feels better\" becomes \"measurably better\" for your AI prompts."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"

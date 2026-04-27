@@ -26,69 +26,22 @@
 
 ---
 
-## What is Caliper, exactly?
+**Caliper is the statistical bench for your AI prompts.** It uses paired BCa bootstrap, section-level Shapley attribution, and rule-conflict linting to answer one question: **is the new prompt actually better than the old one, or does it just *look* that way.** Not another prompt optimization framework, not LLM middleware — it's a measurement instrument.
 
-**Caliper is a statistical A/B testing tool for AI prompts and skills.**
+Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter, local vLLM. **Free forever, MIT, no rent.**
 
-Think of it as **unit tests + auto-reviewer + benchmark** for your prompts. It does one job —
-**tells you whether your new prompt is actually better than the old one, or just *looks* that way.**
+<table>
+<tr><td><b>Knows if v2 actually beat v1</b></td><td>Paired BCa bootstrap + Hedges' g + TOST equivalence. Tells you whether "+17%" is real or noise.</td></tr>
+<tr><td><b>Catches your prompt arguing with itself</b></td><td>Static linter spots conflicts like "always include a checklist" + "skip ceremony for trivial tasks" — exactly the bug AI-written prompts produce. EN + 中文.</td></tr>
+<tr><td><b>Per-paragraph autopsy, not eyeballing</b></td><td>Counterfactual ablation + TMC-Shapley. Tells you <b>which paragraph helps and which hurts</b>.</td></tr>
+<tr><td><b>Iterates without nuking your budget</b></td><td>AI proposes → linter checks → tests run → only accept if statistics pass. Hard <code>--max-cost-cny</code> cap. <b>No surprise bills.</b></td></tr>
+<tr><td><b>Works with what you already have</b></td><td>Any OpenAI-compatible endpoint. Adapter interfaces for Hermes / GEPA / Inspect AI / Langfuse. No lock-in.</td></tr>
+<tr><td><b>Transparent and reproducible</b></td><td>Every verdict lands in JSON — BCa CI, Hedges g, CS interval, linter findings, judge votes. Query with jq or DuckDB.</td></tr>
+</table>
 
-It's not "yet another AI self-improvement framework." It's not a middleware wrapper around an LLM.
-It's a measurement instrument. You hand it two versions of a prompt and a batch of test cases;
-it hands you a statistical verdict: ship / don't ship.
-
-## What problem does it solve?
-
-Have you ever written a prompt for an AI? A `SKILL.md` for Claude Code? A system prompt for ChatGPT? An instruction for an agent?
-
-**The thing that drives you crazy: did my latest change actually help?**
-
-- Coworker asks *"is the new prompt better?"* — all you've got is *"I think so."*
-- You spent the evening trying 20 variations, burned $30 of API credits, can't tell which actually worked.
-- You fix one case, and 5 cases that used to work are now broken.
-- The model upgrades, and your carefully-tuned prompt suddenly doesn't behave the same.
-- The new version *"looks fine"* on 5 examples — then real users complain harder than before.
-
-**It's all the same root cause: you have no objective signal.**
-
-Eyeballing 3 examples and feeling "okay" tells you almost nothing about case 30. AI behavior quality isn't something the eye can count.
-
-**Caliper gives you that signal.**
-
-## How you actually use it
-
-Think of Caliper as **unit tests for your prompts and skills.**
-
-Feed it two versions (old and new) + a batch of real test cases, and it tells you three things:
-
-1. Whether the new version is **really** better, or only *looks* better.
-2. Which cases improved, which got worse.
-3. **Which paragraphs of your prompt are pulling weight**, and which are dead weight.
-
-### Four commands
-
-| Command | What it does |
-|---------|--------------|
-| 🔍 **`caliper lint`** | Static scan — finds contradictory rules in your prompt. Things like *"always include a checklist"* + *"skip ceremony for trivial tasks"* — both rules at once and the AI loses its mind. **Works on Chinese prompts too.** |
-| 📏 **`caliper compare`** | Old version vs new, head-to-head, with a **confidence-interval verdict**: *"this is real"* or *"this is noise."* |
-| 🔄 **`caliper iterate`** | Full auto loop — the AI proposes changes → check for conflicts → run tests → only accept if statistics pass. **Hard cost cap** so it can't blow through your budget. |
-| 🔬 **`caliper analyze`** | Slices your prompt paragraph by paragraph, tells you which paragraphs help and which hurt. |
-
-### Why do I need this? Can't I just look at the outputs?
-
-Here's a real one we got burned on:
-
-> Tweaked a prompt. Ran it against 20 cases. **It scored +17% over the old one.** Felt amazing. Time to ship.
-> Re-ran on a fresh batch we'd never seen — **it scored −8%.**
-
-That +17% was **pure noise**. With 20 cases you can't tell if a difference is real. Caliper's paired confidence interval is `[-0.2, +0.5]` — that interval crosses zero, which means *"could be better, could be worse, you have no actual signal."*
-
-Things your eye can't tell apart, Caliper can.
-
-### Two things you don't have to worry about
-
-- **Free and open source forever** (MIT). Caliper itself charges you nothing.
-- **Cannot run up surprise bills.** Your LLM provider charges per token — Caliper can't change that — but a built-in `--max-cost-cny 50`-style hard cap stops the run the moment you hit your budget. **No 4 AM "what happened" emails.**
+> **A real one we got burned on:** Tweaked a prompt, ran 20 cases. **Scored +17%.** Ready to ship.
+> Re-ran on a fresh batch we'd never seen. **−8%.** That +17% was pure noise. Caliper's paired CI:
+> `[-0.2, +0.5]` — interval crosses zero, *"statistically no difference."* Things your eye can't tell apart, Caliper can.
 
 ---
 
