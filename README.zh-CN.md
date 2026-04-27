@@ -26,16 +26,16 @@
 
 ---
 
-**Caliper 是 AI prompt 的统计实验台。** 它用配对 BCa 自助置信区间 + 段级 Shapley 归因 + 规则冲突 lint，回答一个问题：**新版 prompt 真的好过旧版，还是只是看着好。** 不是又一个 prompt 优化框架，不是给 LLM 套壳的中间件——它是一把测量仪器。
+**Caliper 是 AI prompt 的统计实验台。** 它用配对 BCa 自助置信区间 + 段级 Shapley 归因 + 规则冲突 lint，回答一个问题：**新版 prompt 真的好过旧版，还是只是看着好？** 它不是又一个 prompt 优化框架，也不是给 LLM 套壳的中间件——是一把测量仪器。
 
-接任意 OpenAI 兼容 endpoint —— Qwen / DeepSeek / OpenAI / OpenRouter / 本地 vLLM。**永久免费、MIT、绝不收费**。
+兼容任何 OpenAI 协议的 endpoint —— Qwen / DeepSeek / OpenAI / OpenRouter / 本地 vLLM。**永久免费、MIT 协议、不向你收费**。
 
 <table>
 <tr><td><b>知道 v2 是不是真比 v1 好</b></td><td>配对 BCa 自助置信区间 + Hedges' g + 等价检验。告诉你 "+17%" 是真改进还是噪声。</td></tr>
 <tr><td><b>抓出 prompt 自相矛盾</b></td><td>静态 lint 发现"永远要带清单"+"琐碎任务跳过仪式"这种 AI 自己常写出的隐藏冲突。中英文都支持。</td></tr>
 <tr><td><b>段级解剖，不靠肉眼</b></td><td>反事实消融 + TMC-Shapley。指出 prompt 里**哪一段在拉分、哪一段在扣分**。</td></tr>
 <tr><td><b>自动迭代不烧钱</b></td><td>AI 提议 → lint → 跑测试 → 统计通过才接受的全自动循环。带 <code>--max-cost-cny</code> 硬闸，<b>绝不会有意外账单</b>。</td></tr>
-<tr><td><b>接你已有的一切</b></td><td>OpenAI 兼容 endpoint 全支持。Adapter 接口可换 Hermes / GEPA / Inspect AI / Langfuse。无供应商锁定。</td></tr>
+<tr><td><b>接你已有的 LLM</b></td><td>OpenAI 协议兼容的 endpoint 全支持。Adapter 接口可对接 Hermes / GEPA / Inspect AI / Langfuse，不绑死任何厂商。</td></tr>
 <tr><td><b>透明、可审计、可复现</b></td><td>每个判决都落 JSON：BCa CI、Hedges g、CS 区间、linter 发现、判官投票。jq / DuckDB 直接查。</td></tr>
 </table>
 
@@ -49,33 +49,33 @@
 
 Caliper 有**两种用法**：
 
-1. **直接当 CLI 用** —— 见下面 [Install](#安装) 段，4 个命令，写 JSONL 测试用例，自己读 JSON 判决文件
-2. **装成你 agent 的一个 skill** —— 不记命令、不写 JSONL、不读 JSON。**直接对 agent 说大白话**，它在背后跑 Caliper，再把结论讲给你听
+1. **直接当 CLI 用** —— 见下面 [安装](#安装) 段，4 个命令，自己写 JSONL 测试用例，自己读 JSON 判决文件
+2. **装成你 agent 的一个 skill** —— 不记命令、不写 JSONL、不读 JSON。**直接对 agent 说大白话**，它在后台帮你跑 Caliper，再把结论告诉你
 
 下面讲第 2 种。
 
-## 装完之后是什么感觉
+## 装完之后是什么体验
 
 直接对你正在用的 agent（Claude Code / Hermes / Cursor / 任意支持 SKILL.md 的）说：
 
 > *"我刚改了那个 review skill，新版真的比旧版好吗？"*
 
-Agent 立刻反应：
-- 听到"真的比旧版好吗"这种触发词
-- 自动调 `caliper compare 老.md 新.md`
+Agent 自动接手：
+- 识别"真的比旧版好吗"这种触发短语
+- 调 `caliper compare 老.md 新.md`
 - 跑测试 + 算配对置信区间
-- 把结论讲给你听
+- 把结论告诉你
 
-不用记命令、不用手动操作、不用读 JSON。
+整个过程：不用记命令、不用手动操作、不用读 JSON。
 
 ## 四个真实使用场景
 
 | 你对 agent 说 | Agent 替你做的事 |
 |--------------|----------------|
-| **"我改了 review skill，新版更好吗？"** | 调 `caliper compare`，给你置信区间结论。是真改进就建议上线，是噪声就劝你别上 |
-| **"这个 prompt 太长了，能砍哪段？"** | 调 `caliper analyze`，找出 Shapley 贡献接近 0 或负的段落，建议删除或改写 |
-| **"为啥 AI 老在简单任务里加验证清单？"** | 调 `caliper lint`，发现"永远要带清单"+"琐碎任务跳过"两条规则在打架，指出冲突在 prompt 哪一行 |
-| **"自动改进这个 prompt，但别花超过 ¥50"** | 调 `caliper iterate --max-cost-cny 50 --rounds 3`，跑完把最终冠军 + 判决理由报给你 |
+| **"我改了 review skill，新版更好吗？"** | 调 `caliper compare`，给你一个带置信区间的结论 —— 是真改进就建议上线，是噪声就劝你别上 |
+| **"这个 prompt 太长了，能砍哪段？"** | 调 `caliper analyze`，找出 Shapley 贡献接近 0 或为负的段落，建议你删掉或改写 |
+| **"为啥 AI 老在简单任务里加验证清单？"** | 调 `caliper lint`，发现"永远要带清单"和"琐碎任务跳过"两条规则在打架，告诉你冲突在哪几行 |
+| **"自动改进这个 prompt，但别花超过 ¥50"** | 调 `caliper iterate --max-cost-cny 50 --rounds 3`，跑完把最终选出的版本 + 判决理由给你 |
 
 ## 30 秒装好（Claude Code 示例）
 
@@ -130,9 +130,7 @@ Claude：（识别到触发词，自动调 caliper）
 
 各 agent 的逐条安装命令见 [`skills/README.md`](skills/README.md)。
 
-> Caliper 本身是 CLI —— 任何能调 shell 的 agent 都能直接用它。**skill 文件只是教 agent "看到这种问题该用 Caliper"**，触发关键词识别。
-
----
+> Caliper 本身是 CLI —— 任何能调 shell 的 agent 都能直接用它。**skill 文件的作用只是教 agent："看到这种问题就该用 Caliper"**，让它能识别触发短语。
 
 ---
 
@@ -192,7 +190,7 @@ DASHSCOPE_API_KEY=sk-...
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
-> **完全开源、永久免费（MIT）。** Caliper 本身一分钱不收。唯一花钱的地方是你向 LLM 厂商付的推理费 —— 而且 Caliper 内置 `--max-cost-cny` 硬闸，不会有意外消费。
+> **完全开源、永久免费（MIT）。** Caliper 本身一分钱不收。唯一花钱的地方是你给 LLM 厂商付的推理费 —— 而且 Caliper 内置 `--max-cost-cny` 硬闸，不会有意外消费。
 
 完整上手流程：[`docs/quickstart.zh-CN.md`](docs/quickstart.zh-CN.md)。
 
@@ -200,13 +198,13 @@ DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 
 ## 为什么需要这个？
 
-人在迭代 skill 时反复栽在三个失败模式上，**现有工具一个都拦不住**：
+迭代 skill / prompt 的人，反复栽在三个失败模式上，**现有工具一个都拦不住**：
 
 1. **验证集过拟合。** POC 里一个 `+17%` 的"提升"，到 holdout 上变成 `-7.9%`。没置信区间根本看不出来。
-2. **LLM 反思是噪声。** 你问 LLM "哪一步错了"——它的归因准确率不到 10%（AgenTracer / MAST 2025）。靠反思指导的"改进"大多是随机走步。
-3. **内部规则冲突。** 一个 skill 同时说"总是要有清单" 和 "琐碎任务跳过仪式"——两条不可能同时成立。"总是"会赢，琐碎任务被仪式拖垮。
+2. **LLM 反思是噪声。** 你问 LLM "哪一步错了"——它的归因准确率不到 10%（AgenTracer / MAST 2025）。靠反思指导的"改进"大多是瞎走。
+3. **内部规则冲突。** 一个 skill 同时说"总是要有清单"和"琐碎任务跳过仪式"——两条不可能同时成立。"总是"会赢，琐碎任务被仪式拖垮。
 
-Caliper 是这三个失败模式外面的算法装甲。它**不信点估计、不信 LLM 自归因、不信内部冲突的规则**。
+Caliper 就是堵这三个洞的算法装甲。它**不信点估计、不信 LLM 自归因、不信自相矛盾的规则**。
 
 ---
 
@@ -214,9 +212,9 @@ Caliper 是这三个失败模式外面的算法装甲。它**不信点估计、�
 
 | # | 原则 | 为什么 |
 |---|------|--------|
-| 1 | **梯度来自算法，不来自 LLM。** | 反思只能写，不能归因。用反事实重放 + TMC-Shapley 替代。 |
-| 2 | **每个决策都带数学有效性。** | 不允许"点估计晋级"。BCa 自助、Hedges' g、Hedged-Capital CS —— 每一次判决都给你一个能审计的数字。 |
-| 3 | **外部锚不可替代。** | 任何纯自动化系统都会陷入"自证"陷阱。Caliper 明确**显露**而非**绕过**人工签核。 |
+| 1 | **梯度来自算法，不来自 LLM。** | 反思只能写，不能归因。用反事实重放 + TMC-Shapley 替代它。 |
+| 2 | **每个决策都带数学有效性。** | 不允许"凭点估计晋级"。BCa 自助、Hedges' g、Hedged-Capital CS —— 每一次判决都有一个能审计的数字。 |
+| 3 | **外部锚不可替代。** | 任何纯自动化系统都会陷入"自证"陷阱。Caliper **显式保留**人工签核环节，从不**悄悄绕过**它。 |
 
 ---
 
@@ -258,7 +256,7 @@ uv run python examples/karpathy-v2/demo.py
 4. best.md 上 Linter 6 条 HIGH 违规，含 POC-2 H04 模式
 ```
 
-三道独立闸门 —— 任何一个单独都足以否决那次错误晋级。
+三道独立闸门，任何一道都能拦下那次错误晋级。
 
 ---
 
