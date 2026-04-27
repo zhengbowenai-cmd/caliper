@@ -26,7 +26,18 @@
 
 ---
 
-## What problem does Caliper solve?
+## What is Caliper, exactly?
+
+**Caliper is a statistical A/B testing tool for AI prompts and skills.**
+
+Think of it as **unit tests + auto-reviewer + benchmark** for your prompts. It does one job —
+**tells you whether your new prompt is actually better than the old one, or just *looks* that way.**
+
+It's not "yet another AI self-improvement framework." It's not a middleware wrapper around an LLM.
+It's a measurement instrument. You hand it two versions of a prompt and a batch of test cases;
+it hands you a statistical verdict: ship / don't ship.
+
+## What problem does it solve?
 
 Have you ever written a prompt for an AI? A `SKILL.md` for Claude Code? A system prompt for ChatGPT? An instruction for an agent?
 

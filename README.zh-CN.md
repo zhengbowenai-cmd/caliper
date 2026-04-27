@@ -26,7 +26,17 @@
 
 ---
 
-## Caliper 解决什么问题
+## Caliper 是什么？干嘛用的？
+
+**它是给 AI prompt 和 skill 做统计 A/B 测试的工具。**
+
+可以把它当成 prompt 的**单元测试 + 自动 reviewer + benchmark**，干一件事 ——
+**告诉你你的新版 prompt 是真的好过旧版，还是只是看着好。**
+
+不是又一个"AI 自迭代框架"，也不是给 LLM 套壳的中间件——它就是一把卡尺。
+你给它两份 prompt + 一批测试用例，它给你统计学判决：上 / 别上。
+
+## 它解决什么问题
 
 你给 AI 写过 prompt 吗？或者给 Claude Code 写过 SKILL.md？给 GPT 配过 system prompt？给 agent 调过 instruction？
 
