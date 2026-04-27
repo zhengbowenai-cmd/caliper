@@ -13,8 +13,8 @@
 2. **每个决策都带数学有效性。** 仅点估计永远无法让候选晋级；只有
    **配对 BCa 自助 95% CI 排除 0** 且 **置信序列下界超过预登记
    margin** 才会晋级。
-3. **外部锚不可替代。** 任何纯算法的防线都会被"自证"陷阱慢慢穿透
-   ——真实用户信号 + 人工签核是 safety-critical 晋级的必需品。
+3. **外部锚不可替代。** 任何纯算法的防线，时间一长都会被"自证"陷阱
+   慢慢穿透——真实用户信号 + 人工签核是关键决策环节绕不过去的一环。
 
 ## 八层架构
 
@@ -91,13 +91,13 @@ class SkillRun(BaseModel):
 `runs/<run>/rounds/round_NNN/skill_runs.jsonl`。纯文本，jq / DuckDB
 等外部工具可以直接查。
 
-## **不在**范围内的事
+## 不在范围内的事
 
 - 微调模型权重。Caliper 只动 skill 文本。
 - 运行任意用户工具。执行仍然走 Claude Code 自己的 tool-use；
-  Caliper 只管写 SKILL.md。
-- 替换 LLM 本体。Caliper 是 provider 无关的——自带一个 OpenAI
-  兼容的 endpoint 即可。
+  Caliper 只负责改 SKILL.md。
+- 替换 LLM 本体。Caliper 不绑死任何 provider，自带一个 OpenAI
+  协议兼容的 endpoint 就行。
 
 ## 所有外部系统都是可替换的 adapter
 

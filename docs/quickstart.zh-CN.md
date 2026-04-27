@@ -2,7 +2,7 @@
 
 # 快速上手
 
-从 0 到一次"带闸门的"真实优化运行，大约 10 分钟。
+从零开始，10 分钟跑通一次带闸门的真实优化循环。
 
 ## 0. 安装
 
@@ -18,8 +18,8 @@ uv sync --dev
 
 ## 1. 准备 LLM key
 
-Caliper 只要你接入一个 OpenAI 兼容的 LLM。国内用户推荐阿里云
-DashScope（通义），便宜、快、稳定。
+Caliper 接任何 OpenAI 协议兼容的 LLM。国内用户推荐阿里云
+DashScope（通义）——便宜、快、稳定。
 
 ```bash
 cp .env.example .env
@@ -64,8 +64,8 @@ uv run caliper compare seed.md challenger.md \
     --run-dir runs/cmp-1
 ```
 
-输出：每条 case 的分数、针对 diff 的配对 BCa 95% CI、Hedges' g、
-Confidence Sequence CI、两边的 Lint 发现。
+输出：每条 case 的分数、diff 的配对 BCa 95% 置信区间、Hedges' g、
+Confidence Sequence 区间、两边的 Lint 发现。
 
 ## 5. 完整循环 + 成本硬闸
 
@@ -104,8 +104,8 @@ cat runs/iter-1/rounds/round_000/verdict.json | jq
 uv run caliper analyze skill.md --eval eval.jsonl --permutations 15
 ```
 
-输出每一段的 Shapley φ——告诉你哪些段真的在拉分，哪些在拖分。
-φ 接近 0 的段可以考虑合并或删除。
+输出每一段的 Shapley φ —— 告诉你哪一段在拉分、哪一段在扣分。
+φ 接近 0 的段可以考虑合并或删掉。
 
 ---
 

@@ -22,8 +22,8 @@ Caliper talks to any OpenAI-compatible LLM. DashScope / Qwen works well
 and is inexpensive for Chinese users.
 
 ```bash
-cp .env.example .env            # if we ship one later
-# Edit .env:
+cp .env.example .env
+# Edit .env and fill in:
 # DASHSCOPE_API_KEY=sk-...
 # DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```

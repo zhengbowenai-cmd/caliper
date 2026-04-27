@@ -26,9 +26,9 @@
 
 ---
 
-**Caliper is the statistical bench for your AI prompts.** It uses paired BCa bootstrap, section-level Shapley attribution, and rule-conflict linting to answer one question: **is the new prompt actually better than the old one, or does it just *look* that way.** Not another prompt optimization framework, not LLM middleware — it's a measurement instrument.
+**Caliper is the statistical bench for your AI prompts.** It uses paired BCa bootstrap, section-level Shapley attribution, and rule-conflict linting to answer one question: **is the new prompt actually better than the old one, or does it just *look* that way?** Not another prompt optimization framework, not LLM middleware — it's a measurement instrument.
 
-Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter, local vLLM. **Free forever, MIT, no rent.**
+Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter, local vLLM. **Free forever, MIT-licensed, never charges you anything.**
 
 <table>
 <tr><td><b>Knows if v2 actually beat v1</b></td><td>Paired BCa bootstrap + Hedges' g + TOST equivalence. Tells you whether "+17%" is real or noise.</td></tr>
@@ -47,12 +47,12 @@ Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter
 
 # 🔌 Install as an Agent Skill — Just Talk, Don't Type Commands
 
-Caliper has **two ways to use it**:
+**There are two ways to use Caliper:**
 
-1. **As a CLI directly** — see [Install](#install) below. Four commands, hand-written JSONL test cases, JSON verdict files you read yourself.
-2. **As a skill installed in your agent** — no commands, no JSONL, no JSON parsing. **Just talk to your agent in plain English** and it runs Caliper in the background, then summarizes the verdict for you.
+1. **As a CLI directly** — see [Install](#install) below. Four commands, JSONL test cases you write by hand, JSON verdict files you read yourself.
+2. **As a skill installed in your agent** — no commands, no JSONL, no JSON parsing. **Just talk to your agent in plain English** and it runs Caliper in the background, then summarizes the verdict.
 
-This section covers option 2.
+The rest of this section is about option 2.
 
 ## What it feels like once installed
 
@@ -129,8 +129,6 @@ Full per-agent install snippets in [`skills/README.md`](skills/README.md).
 
 ---
 
----
-
 ## See it in action
 
 ```bash
@@ -187,7 +185,7 @@ DASHSCOPE_API_KEY=sk-...
 DASHSCOPE_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
-> **Free, fully open source (MIT).** Caliper itself never charges you anything. The only money involved is what you pay your LLM provider for inference — and Caliper has a hard `--max-cost-cny` cap so you can't be surprised.
+> **Free, fully open source (MIT).** Caliper itself never charges you anything. The only money involved is what you pay your LLM provider for inference — and Caliper has a hard `--max-cost-cny` cap so you won't get a surprise bill.
 
 Full setup walkthrough: [`docs/quickstart.md`](docs/quickstart.md).
 
@@ -201,7 +199,7 @@ Three failure modes show up over and over when people iterate on skills, and **n
 2. **LLM reflection is noise.** When you ask an LLM "what went wrong?", attribution accuracy is under 10% (AgenTracer / MAST 2025). Most "improvements" guided by reflection are random walks.
 3. **Internal rule conflicts.** A skill saying *"always include a checklist"* AND *"skip ceremony for trivial tasks"* — both rules can't be right. The "always" wins, and trivial tasks get crushed.
 
-Caliper is the algorithmic armor that closes all three. It doesn't trust point estimates, doesn't trust LLM self-attribution, and doesn't trust rules that contradict each other.
+Caliper is the algorithmic armor that plugs all three holes. It doesn't trust point estimates, it doesn't trust LLM self-attribution, and it doesn't trust rules that contradict themselves.
 
 ---
 
@@ -211,7 +209,7 @@ Caliper is the algorithmic armor that closes all three. It doesn't trust point e
 |---|-----------|-----|
 | 1 | **Gradients come from algorithms, not LLMs.** | Reflection is a writer, not an attributor. We use Counterfactual Replay + TMC-Shapley instead. |
 | 2 | **Every decision carries mathematical validity.** | No point-estimate promotions. BCa bootstrap, Hedges' g, Hedged-Capital CS — every verdict has a number you can audit. |
-| 3 | **External anchors are irreplaceable.** | No purely automated system escapes the self-proof trap. Caliper surfaces — never bypasses — human sign-off. |
+| 3 | **External anchors are irreplaceable.** | No purely automated system escapes the self-proof trap. Caliper makes human sign-off explicit; it never silently bypasses you. |
 
 ---
 
@@ -253,7 +251,7 @@ Real POC-2 data, four lines of verdict:
 4. Linter on best.md:  6 HIGH findings, incl. POC-2 H04 pattern
 ```
 
-Three independent gates, each sufficient to reverse the wrong promotion.
+Three independent gates, any one of which would have stopped the wrong promotion.
 
 ---
 
