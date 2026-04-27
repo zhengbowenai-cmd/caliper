@@ -145,28 +145,12 @@ Caliper is the algorithmic armor that closes all three. It doesn't trust point e
 
 Caliper is eight layers stacked into one CLI. The MVP ships five.
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│ GROUND TRUTH       user signals · pairwise arena · external bench  │ V2
-├────────────────────────────────────────────────────────────────────┤
-│ STATISTICAL SAFETY BCa · Hedges' g · TOST · Hedged-Capital CS ·    │
-│                    Thresholdout · Track-and-Stop · BOCPD           │
-├────────────────────────────────────────────────────────────────────┤
-│ GRADIENT SOURCE    Counterfactual Replay · TMC-Shapley · Oracle    │
-│                    Battery  (replaces LLM self-reflection)         │
-├────────────────────────────────────────────────────────────────────┤
-│ EVALUATOR          Ensemble judges · Krippendorff α · IRT · DML    │
-├────────────────────────────────────────────────────────────────────┤
-│ PROPOSER           LLM rewriter · Rule-Conflict Linter · Lagrangian│
-├────────────────────────────────────────────────────────────────────┤
-│ ARCHIVE            MAP-Elites · Round-0 anchors · Pareto admission │ V2
-├────────────────────────────────────────────────────────────────────┤
-│ GOVERNANCE         Capability Manifest · Cost Budget · Privilege   │
-├────────────────────────────────────────────────────────────────────┤
-│ RUNTIME            Claude Code · Hermes skill-manager · Langfuse · │
-│                    Inspect AI · GEPA  (replaceable adapters)       │
-└────────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-dark.svg">
+    <img alt="Caliper architecture — eight layers" src="assets/architecture.svg" width="100%">
+  </picture>
+</p>
 
 Each layer's algorithm cites a peer-reviewed source. See [`docs/algorithms.md`](docs/algorithms.md) for every reference, [`docs/architecture.md`](docs/architecture.md) for the full spec.
 

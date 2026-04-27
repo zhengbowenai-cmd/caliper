@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-label="Caliper 架构 — 八层 (深色)">
+  <defs>
+    <style>
+      .title    { font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.16em; }
+      .comp     { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 400; }
+      .comp-cn  { font-family: 'PingFang SC', 'Noto Sans SC', sans-serif; font-weight: 400; letter-spacing: 0.04em; }
+      .note     { font-family: 'PingFang SC', 'Noto Sans SC', sans-serif; font-weight: 400; }
+      .meta     { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; letter-spacing: 0.18em; }
+      .grid     { stroke: #2A2721; stroke-width: 1; }
+      .planned  { fill: #1A1815; }
+      .accent   { fill: #D4825E; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="720" fill="#131210"/>
+
+  <line x1="60" y1="60" x2="1140" y2="60" class="grid"/>
+
+  <rect x="60" y="60" width="1080" height="80" class="planned" opacity="0.7"/>
+  <text x="60" y="98" class="title" font-size="15" fill="#BAB4A6">地面真值层</text>
+  <text x="60" y="120" class="meta" font-size="10" fill="#D4825E">v2 · 规划中</text>
+  <text x="320" y="106" class="comp-cn" font-size="15" fill="#F0EBE0">用户信号  ·  配对对战  ·  外部基准</text>
+  <text x="320" y="128" class="note" font-size="12" fill="#8A857B" font-style="italic">—— 不可替代的外部锚 ——</text>
+  <line x1="60" y1="140" x2="1140" y2="140" class="grid"/>
+
+  <text x="60" y="178" class="title" font-size="15" fill="#F0EBE0">统计安全层</text>
+  <rect x="60" y="186" width="60" height="2" class="accent"/>
+  <text x="320" y="178" class="comp" font-size="15" fill="#F0EBE0">BCa  ·  Hedges' g  ·  TOST  ·  Hedged-Capital CS</text>
+  <text x="320" y="200" class="comp" font-size="14" fill="#BAB4A6">Thresholdout  ·  Track-and-Stop  ·  BOCPD <tspan fill="#D4825E" font-size="11" font-style="italic">  ·  v2 部分</tspan></text>
+  <line x1="60" y1="220" x2="1140" y2="220" class="grid"/>
+
+  <text x="60" y="258" class="title" font-size="15" fill="#F0EBE0">梯度源层</text>
+  <rect x="60" y="266" width="60" height="2" class="accent"/>
+  <text x="320" y="258" class="comp-cn" font-size="15" fill="#F0EBE0">反事实重放  ·  TMC-Shapley  ·  Oracle</text>
+  <text x="320" y="280" class="note" font-size="12" fill="#8A857B" font-style="italic">—— 替代 LLM 自反思 ——</text>
+  <line x1="60" y1="300" x2="1140" y2="300" class="grid"/>
+
+  <text x="60" y="338" class="title" font-size="15" fill="#F0EBE0">评估器层</text>
+  <rect x="60" y="346" width="60" height="2" class="accent"/>
+  <text x="320" y="338" class="comp-cn" font-size="15" fill="#F0EBE0">判官合奏  ·  Krippendorff α</text>
+  <text x="320" y="360" class="comp" font-size="14" fill="#BAB4A6">IRT  ·  DML  <tspan fill="#D4825E" font-size="11" font-style="italic">·  v2 部分</tspan></text>
+  <line x1="60" y1="380" x2="1140" y2="380" class="grid"/>
+
+  <text x="60" y="418" class="title" font-size="15" fill="#F0EBE0">提议器层</text>
+  <rect x="60" y="426" width="60" height="2" class="accent"/>
+  <text x="320" y="418" class="comp-cn" font-size="15" fill="#F0EBE0">LLM 重写器  ·  规则冲突 Linter  ·  Lagrangian 长度</text>
+  <text x="320" y="440" class="note" font-size="12" fill="#8A857B" font-style="italic">—— 抓 POC H04 "总是 × 琐碎例外" 冲突 ——</text>
+  <line x1="60" y1="460" x2="1140" y2="460" class="grid"/>
+
+  <rect x="60" y="460" width="1080" height="80" class="planned" opacity="0.7"/>
+  <text x="60" y="498" class="title" font-size="15" fill="#BAB4A6">归档层</text>
+  <text x="60" y="520" class="meta" font-size="10" fill="#D4825E">v2 · 规划中</text>
+  <text x="320" y="498" class="comp-cn" font-size="15" fill="#F0EBE0">MAP-Elites  ·  Round-0 锚点  ·  Pareto 入档</text>
+  <line x1="60" y1="540" x2="1140" y2="540" class="grid"/>
+
+  <text x="60" y="578" class="title" font-size="15" fill="#F0EBE0">治理层</text>
+  <rect x="60" y="586" width="60" height="2" class="accent"/>
+  <text x="320" y="578" class="comp-cn" font-size="15" fill="#F0EBE0">能力清单  ·  成本预算  ·  权限信封</text>
+  <line x1="60" y1="620" x2="1140" y2="620" class="grid"/>
+
+  <text x="60" y="658" class="title" font-size="15" fill="#F0EBE0">运行时层</text>
+  <rect x="60" y="666" width="60" height="2" class="accent"/>
+  <text x="320" y="658" class="comp" font-size="15" fill="#F0EBE0">Claude Code  ·  Hermes  ·  Langfuse</text>
+  <text x="320" y="680" class="comp" font-size="14" fill="#BAB4A6">Inspect AI  ·  GEPA  <tspan fill="#8A857B" font-style="italic" font-size="12">—— 全部可替换 adapter</tspan></text>
+  <line x1="60" y1="700" x2="1140" y2="700" class="grid"/>
+
+  <text x="1140" y="46" text-anchor="end" class="meta" font-size="10" fill="#6B6760">八层 · MVP 已交付五层</text>
+</svg>

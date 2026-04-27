@@ -145,28 +145,12 @@ Caliper 是这三个失败模式外面的算法装甲。它**不信点估计、�
 
 Caliper 是 8 层叠在一个 CLI 里。MVP 已交付 5 层。
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│ 地面真值层      用户信号 · 配对对战 · 外部基准                          │ V2
-├────────────────────────────────────────────────────────────────────┤
-│ 统计安全层      BCa · Hedges g · TOST · Hedged-Capital CS ·          │
-│                Thresholdout · Track-and-Stop · BOCPD                │
-├────────────────────────────────────────────────────────────────────┤
-│ 梯度源层        反事实重放 · TMC-Shapley · Oracle                     │
-│                （替代 LLM 自反思）                                    │
-├────────────────────────────────────────────────────────────────────┤
-│ 评估器层        判官合奏 · Krippendorff α · IRT · DML                 │
-├────────────────────────────────────────────────────────────────────┤
-│ 提议器层        LLM 重写器 · 规则冲突 Linter · Lagrangian 长度         │
-├────────────────────────────────────────────────────────────────────┤
-│ 归档层          MAP-Elites · Round-0 锚点 · Pareto 入档                │ V2
-├────────────────────────────────────────────────────────────────────┤
-│ 治理层          能力清单 · 成本预算 · 权限信封                          │
-├────────────────────────────────────────────────────────────────────┤
-│ 运行时层        Claude Code · Hermes · Langfuse ·                    │
-│                Inspect AI · GEPA（全部可替换 adapter）                 │
-└────────────────────────────────────────────────────────────────────┘
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/architecture-zh-dark.svg">
+    <img alt="Caliper 架构 — 八层" src="assets/architecture-zh.svg" width="100%">
+  </picture>
+</p>
 
 每层算法都有论文出处。完整算法引用见 [`docs/algorithms.zh-CN.md`](docs/algorithms.zh-CN.md)，完整规范见 [`docs/architecture.zh-CN.md`](docs/architecture.zh-CN.md)。
 

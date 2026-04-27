@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" role="img" aria-label="Caliper architecture — eight layers">
+  <defs>
+    <style>
+      .title    { font-family: 'Inter', ui-sans-serif, -apple-system, sans-serif; font-weight: 700; letter-spacing: 0.18em; }
+      .v2       { font-family: 'Inter', ui-sans-serif, sans-serif; font-weight: 600; letter-spacing: 0.14em; }
+      .comp     { font-family: 'JetBrains Mono', ui-monospace, 'Menlo', monospace; font-weight: 400; }
+      .note     { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 400; font-style: italic; }
+      .meta     { font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 500; letter-spacing: 0.18em; }
+      .grid     { stroke: #E5DEC9; stroke-width: 1; }
+      .planned  { fill: #F1E9D2; }
+      .accent   { fill: #A84E2E; }
+    </style>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="720" fill="#F7F1E3"/>
+
+  <!-- top hairline -->
+  <line x1="60" y1="60" x2="1140" y2="60" class="grid"/>
+
+  <!-- ─── layer 1: GROUND TRUTH (V2) ─── -->
+  <rect x="60" y="60" width="1080" height="80" class="planned" opacity="0.45"/>
+  <text x="60" y="98" class="title" font-size="15" fill="#3D3A35">GROUND TRUTH</text>
+  <text x="60" y="120" class="meta" font-size="10" fill="#A84E2E">v2 · planned</text>
+  <text x="320" y="106" class="comp" font-size="15" fill="#1A1A1A">user signals  ·  pairwise arena  ·  external benchmark</text>
+  <text x="320" y="128" class="note" font-size="12" fill="#7A7469">— irreplaceable external anchors —</text>
+  <line x1="60" y1="140" x2="1140" y2="140" class="grid"/>
+
+  <!-- ─── layer 2: STATISTICAL SAFETY ─── -->
+  <text x="60" y="178" class="title" font-size="15" fill="#1A1A1A">STATISTICAL SAFETY</text>
+  <rect x="60" y="186" width="60" height="2" class="accent"/>
+  <text x="320" y="178" class="comp" font-size="15" fill="#1A1A1A">BCa  ·  Hedges' g  ·  TOST  ·  Hedged-Capital CS</text>
+  <text x="320" y="200" class="comp" font-size="14" fill="#3D3A35">Thresholdout  ·  Track-and-Stop  ·  BOCPD <tspan fill="#A84E2E" font-size="11" font-style="italic">  ·  v2 partial</tspan></text>
+  <line x1="60" y1="220" x2="1140" y2="220" class="grid"/>
+
+  <!-- ─── layer 3: GRADIENT SOURCE ─── -->
+  <text x="60" y="258" class="title" font-size="15" fill="#1A1A1A">GRADIENT SOURCE</text>
+  <rect x="60" y="266" width="60" height="2" class="accent"/>
+  <text x="320" y="258" class="comp" font-size="15" fill="#1A1A1A">Counterfactual Replay  ·  TMC-Shapley  ·  Oracle Battery</text>
+  <text x="320" y="280" class="note" font-size="12" fill="#7A7469">— replaces LLM self-reflection —</text>
+  <line x1="60" y1="300" x2="1140" y2="300" class="grid"/>
+
+  <!-- ─── layer 4: EVALUATOR ─── -->
+  <text x="60" y="338" class="title" font-size="15" fill="#1A1A1A">EVALUATOR</text>
+  <rect x="60" y="346" width="60" height="2" class="accent"/>
+  <text x="320" y="338" class="comp" font-size="15" fill="#1A1A1A">Ensemble judges  ·  Krippendorff α</text>
+  <text x="320" y="360" class="comp" font-size="14" fill="#3D3A35">IRT  ·  DML  <tspan fill="#A84E2E" font-size="11" font-style="italic">·  v2 partial</tspan></text>
+  <line x1="60" y1="380" x2="1140" y2="380" class="grid"/>
+
+  <!-- ─── layer 5: PROPOSER ─── -->
+  <text x="60" y="418" class="title" font-size="15" fill="#1A1A1A">PROPOSER</text>
+  <rect x="60" y="426" width="60" height="2" class="accent"/>
+  <text x="320" y="418" class="comp" font-size="15" fill="#1A1A1A">LLM rewriter  ·  Rule-Conflict Linter  ·  Lagrangian length</text>
+  <text x="320" y="440" class="note" font-size="12" fill="#7A7469">— catches the POC H04 "Always × Trivial" bug —</text>
+  <line x1="60" y1="460" x2="1140" y2="460" class="grid"/>
+
+  <!-- ─── layer 6: ARCHIVE (V2) ─── -->
+  <rect x="60" y="460" width="1080" height="80" class="planned" opacity="0.45"/>
+  <text x="60" y="498" class="title" font-size="15" fill="#3D3A35">ARCHIVE</text>
+  <text x="60" y="520" class="meta" font-size="10" fill="#A84E2E">v2 · planned</text>
+  <text x="320" y="498" class="comp" font-size="15" fill="#1A1A1A">MAP-Elites  ·  Round-0 anchors  ·  Pareto admission</text>
+  <line x1="60" y1="540" x2="1140" y2="540" class="grid"/>
+
+  <!-- ─── layer 7: GOVERNANCE ─── -->
+  <text x="60" y="578" class="title" font-size="15" fill="#1A1A1A">GOVERNANCE</text>
+  <rect x="60" y="586" width="60" height="2" class="accent"/>
+  <text x="320" y="578" class="comp" font-size="15" fill="#1A1A1A">Capability Manifest  ·  Cost Budget  ·  Privilege Envelope</text>
+  <line x1="60" y1="620" x2="1140" y2="620" class="grid"/>
+
+  <!-- ─── layer 8: RUNTIME ─── -->
+  <text x="60" y="658" class="title" font-size="15" fill="#1A1A1A">RUNTIME</text>
+  <rect x="60" y="666" width="60" height="2" class="accent"/>
+  <text x="320" y="658" class="comp" font-size="15" fill="#1A1A1A">Claude Code  ·  Hermes skill-manager  ·  Langfuse</text>
+  <text x="320" y="680" class="comp" font-size="14" fill="#3D3A35">Inspect AI  ·  GEPA  <tspan fill="#7A7469" font-style="italic" font-size="12">— replaceable adapters</tspan></text>
+  <line x1="60" y1="700" x2="1140" y2="700" class="grid"/>
+
+  <!-- corner signature -->
+  <text x="1140" y="46" text-anchor="end" class="meta" font-size="10" fill="#8A857B">8 layers · mvp ships 5</text>
+</svg>
