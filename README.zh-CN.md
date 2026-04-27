@@ -43,6 +43,23 @@
 > 换一组没见过的题重跑，**−8%**。那 17% 全是噪声——Caliper 的配对置信区间一算
 > `[-0.2, +0.5]`，区间跨 0，意思是"统计上没区别"。**肉眼分不清的事，Caliper 算得清。**
 
+## 在你的 Agent 里直接用 Caliper
+
+我们把 Caliper 自己打包成了 [一个 skill](skills/caliper/SKILL.md)——任何支持 SKILL.md 格式的 agent 装上之后，可以直接对它说"测一下这个新 prompt 比旧版好不好"，它会自动调 `caliper` CLI 给你结果。
+
+| Agent / IDE | 安装方法 | 状态 |
+|-------------|---------|------|
+| **Claude Code** | 拷到 `~/.claude/skills/caliper/` | ✅ 原生 |
+| **Hermes Agent** | `hermes skills install caliper` 或手动放 `~/.hermes/skills/caliper/` | ✅ 原生（[agentskills.io](https://agentskills.io)） |
+| **OpenClaw** | 拷到 `~/.openclaw/skills/caliper/` | ✅ 原生 |
+| **Cursor** | `cursor-rules.mdc` 拷到 `.cursor/rules/` | ✅ |
+| **Continue**（VS Code / JetBrains） | 拷到 `.continue/rules/` | ✅ |
+| **Aider** | `aider --read SKILL.md` | ✅ |
+| **Codex CLI** | 拷到 `~/.codex/instructions.md` | 手动 |
+| **其他任意 agent** | 直接 shell 调用 `caliper compare ...` 即可 | ✅ 通用 |
+
+完整安装命令见 [`skills/README.md`](skills/README.md)。Caliper 本身是一个 CLI 工具——**任何能调 shell 的 agent 都能直接用它，不一定需要 skill 文件**。skill 文件只是为了让 agent 知道"啥时候该用 Caliper"。
+
 ---
 
 ## 一屏看完它怎么用

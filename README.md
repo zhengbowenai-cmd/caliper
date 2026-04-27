@@ -43,6 +43,23 @@ Works with any OpenAI-compatible endpoint — Qwen, DeepSeek, OpenAI, OpenRouter
 > Re-ran on a fresh batch we'd never seen. **−8%.** That +17% was pure noise. Caliper's paired CI:
 > `[-0.2, +0.5]` — interval crosses zero, *"statistically no difference."* Things your eye can't tell apart, Caliper can.
 
+## Use Caliper from inside your agent
+
+We ship Caliper itself as [a skill](skills/caliper/SKILL.md). Any agent that respects the SKILL.md format can install it and then you just *talk to your agent* — *"is this new prompt actually better than my old one?"* — and it runs `caliper compare` for you.
+
+| Agent / IDE | How to install | Status |
+|-------------|---------------|--------|
+| **Claude Code** | Drop into `~/.claude/skills/caliper/` | ✅ native |
+| **Hermes Agent** | `hermes skills install caliper`, or drop into `~/.hermes/skills/caliper/` | ✅ native ([agentskills.io](https://agentskills.io)) |
+| **OpenClaw** | Drop into `~/.openclaw/skills/caliper/` | ✅ native |
+| **Cursor** | Copy `cursor-rules.mdc` into `.cursor/rules/` | ✅ |
+| **Continue** (VS Code / JetBrains) | Copy into `.continue/rules/` | ✅ |
+| **Aider** | `aider --read SKILL.md` | ✅ |
+| **Codex CLI** | Append to `~/.codex/instructions.md` | manual |
+| **Any other agent** | Shell out to `caliper compare ...` directly | ✅ universal |
+
+Full install snippets for each in [`skills/README.md`](skills/README.md). Caliper is a plain CLI — **any agent that can run shell commands can use it without a skill file**. The skill files just tell the agent *when* to reach for it.
+
 ---
 
 ## See it in action

@@ -1,0 +1,56 @@
+---
+description: Statistically test prompt / SKILL.md changes with the caliper CLI. Activate when the user asks whether a prompt edit really improved things, asks to compare two prompts, or asks to find conflicts/dead-weight in a long prompt.
+globs:
+  - "**/SKILL.md"
+  - "**/*prompt*.md"
+  - "**/*system-prompt*.md"
+alwaysApply: false
+---
+
+# Caliper — Cursor rule
+
+Use the `caliper` CLI when the user wants statistical evidence that a
+prompt change is real, not just "feels better."
+
+## Trigger words
+
+- "is this prompt better"
+- "A/B test these prompts"
+- "did my edit help"
+- "find conflicts in this prompt"
+- "which paragraph is dragging it down"
+- 中文：新版 prompt / 真比旧版好 / 对比 / 测一测
+
+## Quick reference
+
+```bash
+# 1) Static check for rule conflicts (no LLM cost)
+caliper lint path/to/prompt.md
+
+# 2) Head-to-head A/B with confidence interval
+caliper compare old.md new.md --eval cases.jsonl --run-dir runs/cmp
+
+# 3) Auto-iterate with hard cost cap (no surprise bills)
+caliper iterate seed.md --eval cases.jsonl --rounds 3 --max-cost-cny 50
+
+# 4) Per-paragraph attribution
+caliper analyze prompt.md --eval cases.jsonl
+```
+
+## How to read the verdict
+
+- BCa 95% CI **excludes 0** → real change (positive or negative)
+- BCa CI **crosses 0** → noise; no statistical signal
+- Hedges' g: 0.2 small · 0.5 medium · 0.8+ large
+
+Aim for n ≥ 20 in eval cases for meaningful statistical power.
+
+## Eval JSONL format
+
+```json
+{"id": "case-01", "input": "user prompt", "principle": "what's tested", "rubric": "0-10 grading"}
+```
+
+## Repo
+
+https://github.com/zhengbowenai-cmd/caliper
